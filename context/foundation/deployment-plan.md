@@ -12,7 +12,7 @@ platform: Cloudflare Workers
 production_branch: main
 working_branch: main
 worker_url: https://home-fit.emilia-gajek.workers.dev
-worker_version: 620dbdf5-2037-42fa-9320-ba562a37bc74
+worker_version: "rotates per push — check `npx wrangler deployments list`"
 ---
 
 # Cloudflare Workers Integration & Deployment Plan — HomeFit
@@ -24,7 +24,7 @@ worker_version: 620dbdf5-2037-42fa-9320-ba562a37bc74
 
 ## ▶️ Resume point
 
-**🌐 LIVE: `https://home-fit.emilia-gajek.workers.dev`** — version `620dbdf5-2037-42fa-9320-ba562a37bc74`, **deployed automatically by Workers Builds** from a push to `main`. Active at 100%, `HTTP/2 200`, `no-store` intact.
+**🌐 LIVE: `https://home-fit.emilia-gajek.workers.dev`** — **deployed automatically by Workers Builds** on every push to `main`. The version ID now rotates per push, so this document no longer pins one; read it with `npx wrangler deployments list`. Two consecutive auto-deploys verified: `620dbdf5` (20:47:56Z) then `fa8644b7` (20:52:17Z), each active at 100%. Live: `/` and `/auth/signin` both `200`, 0.34 s, `no-store` intact.
 
 **Next action: Phase 5, step 5.1 — free-plan CPU guardrails.**
 
