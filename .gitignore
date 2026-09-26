@@ -26,3 +26,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# asdf local tool pins. Untracked deliberately: Cloudflare Workers Builds
+# parses .tool-versions from the repo root and fails on the "ivm-node" plugin
+# name. Node is pinned for CI via .nvmrc instead.
+.tool-versions
