@@ -26,7 +26,7 @@ worker_version: 96f96055-eb31-4741-bc49-f3cc473f9f65
 
 **🌐 LIVE: `https://home-fit.emilia-gajek.workers.dev`** — version `96f96055-eb31-4741-bc49-f3cc473f9f65`, both runtime secrets set, startup 16 ms, production smoke 8/8, `wrangler tail` clean.
 
-**Next action: Phase 4, steps 4.1–4.6 and 4.8 — 👤 dashboard only.** The agent finished its share: **4.7 ✅** and **4.9 ✅**. **4.10 is ⛔ blocked** — Workers Builds clones `main`, and `main` still carries `wrangler.jsonc` `name: "10x-astro-starter"` and the pre-Phase-8 `src/middleware.ts`; see the blocker table in Phase 4.
+**Next action: 👤 fix the build command in the dashboard (4.4), then retry the build.** Builds are now firing on push to `main`; two have run and both failed. Build #1: `.tool-versions` (fixed in `6486a94`). Build #2: lint-before-sync — **dashboard fix, not a code fix**. Set the build command to `npx astro sync && npm run lint && npx astro check && npm run build`. The agent finished **4.7 ✅** and **4.9 ✅**; `main` is merged and `wrangler.jsonc` on `main` correctly reads `home-fit`.
 
 | Phase                          | Status         |     | Phase                        | Status         |
 | ------------------------------ | -------------- | --- | ---------------------------- | -------------- |
@@ -44,7 +44,7 @@ worker_version: 96f96055-eb31-4741-bc49-f3cc473f9f65
 
 **Open items:**
 
-- [ ] 👤 **Merge `feature/cloudflare-deployment` into `main` before 4.10.** Hard prerequisite for auto-deploy — the agent does not commit.
+- [ ] 👤 **Merge `feature/cloudflare-deployment` into `main` before 4.10.** ✅ Done — PR #1, merge `fc11813`.
 - [ ] 👤 Delete one straggler test user: `confirmcheck-1790450744@example.com`. The Supabase MCP server is read-only, so this needs the dashboard.
 - [ ] **P5** (disposable smoke email) is session-only — ask again if 3.9 is ever re-run.
 - [ ] **P7 = Unknown** — whether `SUPABASE_URL`/`SUPABASE_KEY` exist as GitHub repo secrets. The agent's `gh` token is **403** on `emgaj/fitness-app` secrets, so only you can answer. Not a gate: a missing secret makes the advisory `ci` build unrepresentative, it does not fail CI.
@@ -246,7 +246,14 @@ The CLI-only alternative is the other branch of **D1**, already rejected: GitHub
 - [ ] **4.1** 👤 Dashboard → `home-fit` → Settings → Build → **Connect** the GitHub repo.
 - [ ] **4.2** 👤 Scope the Cloudflare GitHub App to **this repository only**, not the whole account.
 - [ ] **4.3** 👤 Set the production branch to **`main`** (confirmed: it is the repo's only branch).
-- [ ] **4.4** 👤 Build command, to gate on quality per D2: `npm run lint && npx astro sync && npx astro check && npm run build`. A non-zero exit fails the build and **nothing deploys**.
+- [ ] **4.4** 👤 Build command, to gate on quality per D2. ⛔ **The original ordering in this plan was wrong and failed build #2** — `npm run lint` ran before `npx astro sync`. Use:
+
+      ```
+      npx astro sync && npm run lint && npx astro check && npm run build
+      ```
+
+      **`astro sync` must come first.** It generates `.astro/` (`env.d.ts`, `types.d.ts`), which is **gitignored** and therefore absent from a fresh clone. Without it, `astro:env/server` and the Astro context types do not resolve, every typed value degrades to `any`/error-typed, and the type-aware `@typescript-eslint/no-unsafe-*` rules produce **exactly 26 errors** in `src/lib/supabase.ts`, `src/middleware.ts` and `src/pages/auth/confirm-email.astro`. Locally lint passes only because `.astro/` is left over from an earlier run — a false green. Reproduce the container state with `mv .astro /tmp/bak && npm run lint` (verified: 26 errors, byte-identical to the build log; restoring via `npx astro sync` returns exit 0).
+      `.github/workflows/ci.yml` already had the correct order at lines 19–20 — it was the plan, not the repo, that was wrong. A non-zero exit still fails the build and **nothing deploys**, which is D2 working as designed.
 - [ ] **4.5** 👤 Leave the deploy command at the default `npx wrangler deploy`.
 - [ ] **4.6** 👤 **Disable Preview Builds** (D5). Also avoids three open bugs: `workers-sdk#15682` (preview deploys fail on a CI match tag belonging to no Worker), `#15349` (preview build vars invisible and silently wiped on edit), `#15722` (`preview/*` branch filters rejected with 400).
 - [x] **4.7** ✅ Node pinning confirmed: `.nvmrc` = `22.17.1` and `.tool-versions` = `ivm-node 22.17.1` agree, so there is no ambiguity and `.node-version` was **not** added. ⚠️ `.nvmrc` is **uncommitted** — see the 4.10 blocker; Workers Builds reads it from the cloned `main`, where it is still 22.14.0.
@@ -271,6 +278,17 @@ Every hardening change is **uncommitted on `feature/cloudflare-deployment`** by 
 
 - [ ] **4.10** Trigger a real deploy with a trivial commit to `main`; watch the build log in the dashboard. ⛔ blocked on the merge above.
 - [ ] **4.11** Verify the deployed version changed: `npx wrangler versions list` — expect a new ID replacing `96f96055-eb31-4741-bc49-f3cc473f9f65`.
+
+### Build failures actually hit (2026-09-26)
+
+| # | Symptom in the build log                                                                                              | Root cause                                                                                                                                                                             | Fix                                                                                 |
+| - | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 1 | `Found a .tool-versions file in repository root. Installing dependencies.` → `Failed: error occurred while installing tools or dependencies` **0.19 s later** | `.tool-versions` was tracked and read `ivm-node 22.17.1`. Workers Builds parses `.tool-versions` **even though the build-image docs list only `.nvmrc` / `.node-version` for Node**, and `ivm-node` is a local asdf plugin name it cannot resolve. Died before `npm ci`. | `git rm --cached .tool-versions` + gitignore it. File stays on disk for local asdf; `.nvmrc` already pins 22.17.1. Commit `6486a94`. |
+| 2 | `✖ 26 problems (26 errors, 0 warnings)` from `eslint .`                                                               | Build command linted before `astro sync`; see 4.4.                                                                                                                                     | Reorder the dashboard build command — `astro sync` first.                            |
+
+⚠️ **`.tool-versions` must never be re-tracked.** It is a silent, instant build killer and the error message never names the file's contents.
+
+ℹ️ Harmless noise in the log: three `npm warn EBADENGINE` lines (`astro-eslint-parser`, `eslint-plugin-astro` want `^22.22.3`; `undici` wants `>=22.19.0`; we pin 22.17.1). Warnings only — `npm ci` still reported `added 671 packages in 17s`. Revisit if Phase 7 bumps Node; the image preinstalls 22.23.2 and 24.18.0, so moving to **22.23.2** would both satisfy these engines and skip the ~4 s Node download.
 
 **Edge cases:** install fails → the package manager is auto-detected from the lockfile; override only via `SKIP_DEPENDENCY_INSTALL=1` plus an explicit install in the build command · deploy fails on a name mismatch → `wrangler.jsonc` `name` must exactly equal the connected Worker, so 1.3 is a prerequisite · push triggers nothing → check Build watch paths (an include/exclude glob can filter the commit out) and the GitHub App repo scope · builds cap at 20 min on both plans → enable build caching · Free-plan build concurrency is **1**, so rapid pushes queue rather than run in parallel.
 
