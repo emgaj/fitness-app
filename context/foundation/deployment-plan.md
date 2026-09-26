@@ -47,7 +47,7 @@ worker_version: "rotates per push — check `npx wrangler deployments list`"
 - [x] 👤 **Merge the working branch into `main`** — done, PR #1 / `fc11813`. Discharged.
 - [ ] 👤 Delete one straggler test user: `confirmcheck-1790450744@example.com`. The Supabase MCP server is read-only, so this needs the dashboard.
 - [ ] **P5** (disposable smoke email) is session-only — ask again if 3.9 is ever re-run.
-- [ ] **P7 = Unknown** — whether `SUPABASE_URL`/`SUPABASE_KEY` exist as GitHub repo secrets. The agent's `gh` token is **403** on `emgaj/fitness-app` secrets, so only you can answer. Not a gate: a missing secret makes the advisory `ci` build unrepresentative, it does not fail CI.
+- [x] **P7 — resolved: no repo secrets needed.** 👤 confirmed none are set. None are required: `astro.config.mjs:23-24` declares both `SUPABASE_URL` and `SUPABASE_KEY` as `optional: true`, so `astro build` succeeds without them — empirically confirmed by two successful Workers Builds deploys running with build variables empty (4.8). The vestigial `env:` block was removed from `ci.yml`'s `ci` job. Runtime credentials come from `wrangler secret put` and are unaffected.
 
 ---
 
@@ -105,7 +105,7 @@ The agent must never invent a Supabase project ref, URL or key; never fall back 
 | **P4** | Email confirmation ON or OFF?             | 👤 dashboard — **no MCP tool exposes auth config**         | — an answer    | 2.4, 3.9 | ✅ ON → temporarily OFF for Phases 2–3 → **back ON and verified**             |
 | **P5** | Disposable email for the production smoke | 👤 yours                                                   | — an answer    | 3.9      | ✅ supplied (session-only)                                                    |
 | **P6** | Authoritative **Node version**            | 👤 `.nvmrc` 22.14.0 vs `.tool-versions` 22.17.1 disagreed  | — an answer    | 0.2, 4.7 | ✅ **22.17.1**; `.nvmrc` updated to match                                     |
-| **P7** | GitHub repo secrets set?                  | 👤 only you can check — a missing one does **not** fail CI | — an answer    | 4.9      | ⚠️ **Unknown** — still open                                                   |
+| **P7** | GitHub repo secrets set?                  | 👤 only you can check — a missing one does **not** fail CI | — an answer    | 4.9      | ✅ **None set, and none needed** — both are `optional: true`; `env:` block dropped from `ci.yml` |
 | **P8** | Production smoke policy                   | 👤 a call about your data                                  | — an answer    | 3.9      | ✅ automated run accepted (creates a real user)                               |
 
 ⛔ **P2 must never be `service_role`.** It bypasses RLS on every request and would be handed to a public edge runtime. A JWT carrying `"role":"service_role"`, or an `sb_secret_…` prefix, is refused.
@@ -260,7 +260,7 @@ The CLI-only alternative is the other branch of **D1**, already rejected: GitHub
 - [x] **4.7** ✅ Node pinning confirmed: `.nvmrc` = `22.17.1` is the mechanism Workers Builds actually used — the log reads `Detected the following tools from environment: nodejs@22.17.1` → `Installing nodejs 22.17.1`. `.node-version` was **not** needed. `.tool-versions` was **untracked** in `6486a94` — see failure #1 below.
 - [x] **4.8** 👤 Leave **build variables empty**. The build does not need Supabase credentials — both secrets are `optional: true`, so `astro build` will not fail without them, and build vars are invisible at runtime anyway.
 - [x] **4.9** ✅ Audited `.github/workflows/ci.yml`: two jobs, `ci` and `smoke`, **neither deploys** — no `wrangler-action`, no `wrangler deploy`, no `CLOUDFLARE_API_TOKEN`. No pipeline race. Keep it that way.
-      **P7 still ⚠️ Unknown — 👤 yours.** `gh secret list` returned `HTTP 403: You must have repository read permissions or have the repository secrets fine-grained permission` on `emgaj/fitness-app`, so the agent cannot read it. Check Settings → Secrets and variables → Actions for `SUPABASE_URL` + `SUPABASE_KEY`. A missing secret does **not** fail CI (both are `optional: true`), it just makes the `ci` job's build unrepresentative.
+      **P7 ✅ resolved — no repo secrets exist and none are needed.** The agent's `gh` token was 403 on `emgaj/fitness-app` secrets; 👤 confirmed via the dashboard that none are set. That is the correct end state: `astro.config.mjs:23-24` marks both `optional: true`, and Workers Builds proves the point by building with build variables empty. The `ci` job's `env:` block referenced secrets that never existed and was removed.
       Note: `ci.yml` pins `node-version: 22` (floating minor), not 22.17.1 like `.nvmrc`. Advisory-only job, so this is cosmetic drift — worth aligning in Phase 7, not a gate.
 
 ### ✅ The `main` prerequisite — discharged
@@ -345,7 +345,7 @@ Goal: exercise recovery deliberately **while nothing is broken**, per `infrastru
 | **Supabase Auth — 1 h token refresh**    | `jwt_expiry = 3600`        | Users silently logged out at 1 h; invisible to any test shorter than an hour | ✅ 1.7 (opt-in)                      |
 | **Supabase — runtime secrets**           | `wrangler secret put`      | `createClient()` returns `null`; auth degrades silently to anonymous         | ✅ 1.1, 1.2, 3.4                     |
 | **GitHub ↔ Cloudflare (Workers Builds)** | Cloudflare GitHub App      | Over-broad repo access; builds not triggering                                | ⬜ 4.1, 4.2 👤                       |
-| **GitHub Actions `ci` / `smoke`**        | `.github/workflows/ci.yml` | Two pipelines racing the same Worker if a deploy job is added                | ⬜ 4.9 (**P7** still unknown)        |
+| **GitHub Actions `ci` / `smoke`**        | `.github/workflows/ci.yml` | Two pipelines racing the same Worker if a deploy job is added                | ✅ 4.9 — advisory only, neither deploys |
 | **Cloudflare Images binding**            | `imageService`             | Auto-provisioned `IMAGES` binding on deploy                                  | ✅ 1.4 — avoided via `"passthrough"` |
 
 ---
