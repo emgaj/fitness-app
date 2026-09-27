@@ -463,13 +463,13 @@ Rollback is forward-only. The undo is a new migration dropping the trigger, func
 
 #### Automated
 
-- [x] 4.1 `npx supabase migration list` shows the migration applied both locally and remotely
-- [x] 4.2 Security advisor returns no security finding referencing `profiles`, `handle_new_user` or `set_updated_at`
-- [x] 4.3 The catalog query returns identical output locally and on the hosted project
-- [x] 4.4 `npm run lint` and `npx prettier --check` on the touched files pass after the documentation edits
+- [x] 4.1 `npx supabase migration list` shows the migration applied both locally and remotely — 128d0b0
+- [x] 4.2 Security advisor returns no security finding referencing `profiles`, `handle_new_user` or `set_updated_at` — 128d0b0
+- [x] 4.3 The catalog query returns identical output locally and on the hosted project — 128d0b0
+- [x] 4.4 `npm run lint` and `npx prettier --check` on the touched files pass after the documentation edits — 128d0b0
 
 #### Manual
 
-- [x] 4.5 Signing up on the deployed Worker creates exactly one `profiles` row for the new account
-- [x] 4.6 A contributor following README from a clean clone reaches a working local database
-- [x] 4.7 `README.md` no longer claims no migrations are required
+- [x] 4.5 Signing up on the deployed Worker creates exactly one `profiles` row for the new account — 128d0b0
+- [x] 4.6 A contributor following README from a clean clone reaches a working local database — 128d0b0
+- [x] 4.7 `README.md` no longer claims no migrations are required — 128d0b0
