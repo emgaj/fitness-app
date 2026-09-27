@@ -1,10 +1,10 @@
 ---
 change_id: per-person-data-safety
 title: Per-person data is safe by default
-status: implemented
+status: archived
 created: 2026-09-27
 updated: 2026-09-27
-archived_at: null
+archived_at: 2026-09-27T19:13:32Z
 ---
 
 ## Notes

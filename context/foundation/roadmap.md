@@ -41,7 +41,7 @@ A person who trains at home starts every session with an unstructured decision �
 
 | ID   | Change ID                 | Outcome (user can …)                                                     | Prerequisites    | PRD refs                                     | Status   |
 | ---- | ------------------------- | ------------------------------------------------------------------------ | ---------------- | -------------------------------------------- | -------- |
-| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else    | —                | FR-002, §Access Control                      | in-progress |
+| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else    | —                | FR-002, §Access Control                      | done     |
 | F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written  | —                | §Business Logic, §Open Questions 1, 2        | ready    |
 | F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready    |
 | S-01 | `training-survey`         | state their goal, level, five training days and preferred trainers       | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | proposed |
@@ -88,7 +88,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced first because the product is multi-user from day one and `tech-stack.md` flags row-level security as a week-one dependency; retrofitting per-row access policies after several tables exist is the expensive order. Scoped to the access contract plus the first table only — every later slice adds its own tables following the pattern, so this does not become a build-the-whole-schema item.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-02: The coaching week is written down
 
@@ -239,4 +239,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Done
 
-(Empty on first generation. `/10x-archive` appends entries here.)
+- **F-01: (foundation) the migration workflow is wired and the first per-person table ships with row-level access policies, so one signed-in person's rows are unreachable by another.** — Archived 2026-09-27 → `context/archive/2026-09-27-per-person-data-safety/`. Lesson: —.
