@@ -38,13 +38,17 @@ jobs:
       - run: npm ci
       - name: Start local Supabase
         run: |
-          supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,postgres-meta,supavisor
+          supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,realtime,storage-api,supavisor
           supabase status -o env | grep -E '^(API_URL|ANON_KEY)=' > supabase.env
       - name: Configure secrets for build and preview
         run: |
           source supabase.env
           printf 'SUPABASE_URL=%s\nSUPABASE_KEY=%s\n' "$API_URL" "$ANON_KEY" > .env
           cp .env .dev.vars
+      - name: Run RLS isolation check
+        run: npm run rls-check
+      - name: Guard generated database types
+        run: npm run db:types && git diff --exit-code src/db/database.types.ts
       - run: npm run build
       - name: Run smoke test against production preview
         run: |
