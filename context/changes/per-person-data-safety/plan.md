@@ -433,31 +433,31 @@ Rollback is forward-only. The undo is a new migration dropping the trigger, func
 
 #### Automated
 
-- [x] 2.1 `npx astro sync && npx astro check` passes with zero errors
-- [x] 2.2 `npm run lint` passes
-- [x] 2.3 `npm run build` succeeds
-- [x] 2.4 `BASE_URL=http://localhost:4321 npm run smoke` passes against `npm run preview`
+- [x] 2.1 `npx astro sync && npx astro check` passes with zero errors — 32433e9
+- [x] 2.2 `npm run lint` passes — 32433e9
+- [x] 2.3 `npm run build` succeeds — 32433e9
+- [x] 2.4 `BASE_URL=http://localhost:4321 npm run smoke` passes against `npm run preview` — 32433e9
 
 #### Manual
 
-- [x] 2.5 Sign-in, sign-up and sign-out behave identically in a browser, including the wrong-password error
-- [x] 2.6 With secrets removed from `.dev.vars`, the app degrades to the documented redirect rather than a 500
+- [x] 2.5 Sign-in, sign-up and sign-out behave identically in a browser, including the wrong-password error — 32433e9
+- [x] 2.6 With secrets removed from `.dev.vars`, the app degrades to the documented redirect rather than a 500 — 32433e9
 
 ### Phase 3: Isolation proof and CI enforcement
 
 #### Automated
 
-- [ ] 3.1 `npm run rls-check` exits `0` against a local Supabase with the migration applied
-- [ ] 3.2 The check fails when the `authenticated` select policy is temporarily broadened to `using (true)`
-- [ ] 3.3 `npm run lint` passes on the new script
+- [x] 3.1 `npm run rls-check` exits `0` against a local Supabase with the migration applied
+- [x] 3.2 The check fails when the `authenticated` select policy is temporarily broadened to `using (true)`
+- [x] 3.3 `npm run lint` passes on the new script
 - [ ] 3.4 The `smoke` job passes end to end in CI with the isolation step visible in the log
-- [ ] 3.7 The types-drift step fails when `src/db/database.types.ts` is stale
-- [ ] 3.8 The positive-control assertion fails when the `authenticated` update policy is sabotaged to `using (false)`
+- [x] 3.7 The types-drift step fails when `src/db/database.types.ts` is stale
+- [x] 3.8 The positive-control assertion fails when the `authenticated` update policy is sabotaged to `using (false)`
 
 #### Manual
 
-- [ ] 3.5 The failure output is readable enough to diagnose a policy regression without reading the script source
-- [ ] 3.6 The sabotage test names the specific assertion that broke
+- [x] 3.5 The failure output is readable enough to diagnose a policy regression without reading the script source
+- [x] 3.6 The sabotage test names the specific assertion that broke
 
 ### Phase 4: Apply to the hosted project and document the pattern
 
