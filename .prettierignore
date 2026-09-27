@@ -1,0 +1,5 @@
+# Vendored 10x CLI tooling. These files are synced from the CLI and carry their own
+# formatting; rewriting them here only creates churn the next sync undoes.
+# eslint.config.js ignores the same paths.
+.github/skills/**
+.github/.10x-cli-manifest.json

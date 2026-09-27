@@ -81,6 +81,10 @@ const scriptsConfig = defineConfig({
 
 export default defineConfig(
   includeIgnoreFile(gitignorePath),
+  // Vendored 10x CLI skill tooling. Its .mjs scripts are not in tsconfig.json, so the
+  // type-aware base config cannot parse them, and they carry their own formatting that a
+  // CLI sync would overwrite anyway. Lint our code, not our tools.
+  { ignores: [".github/skills/**"] },
   baseConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],
