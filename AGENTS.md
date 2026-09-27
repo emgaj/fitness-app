@@ -16,11 +16,15 @@ Astro 7 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 
 - `npx astro check` — type-check; CI runs `npx astro sync` first. Neither is a `package.json` script.
 - `BASE_URL=http://localhost:4321 npm run smoke` — auth-flow smoke test against a running server
+- `npm run rls-check` — dependency-free local RLS isolation check for `public.profiles`
+- `npm run db:reset` — reset the local Supabase database and apply migrations
+- `npm run db:types` — regenerate `@src/db/database.types.ts`; never edit it by hand
+- `npm run db:push` — apply migrations to the linked hosted Supabase project as a human-approved step
 - Everything else (`dev`, `build`, `preview`, `lint`, `lint:fix`, `format`) — see `scripts` in `@package.json`. `dev` and `preview` serve on the Cloudflare workerd runtime, port 4321.
 
 ## Testing
 
-There is no unit-test framework yet. `@scripts/smoke.mjs` is a dependency-free HTTP walkthrough of the auth flow; it needs a reachable Supabase with email confirmation disabled. To run one scenario, comment out entries in its `steps` array — there is no per-test selector. Add a real test runner before building product features.
+There is no unit-test framework yet. `@scripts/smoke.mjs` is a dependency-free HTTP walkthrough of the auth flow; it needs a reachable Supabase with email confirmation disabled. `@scripts/rls-check.mjs` is the second dependency-free check; it uses the publishable key against local Supabase to prove profile creation and per-person RLS isolation. To run one smoke scenario, comment out entries in its `steps` array — there is no per-test selector. Add a real test runner before building product features.
 
 ## Auth conventions
 
@@ -30,10 +34,11 @@ Auth POST endpoints read `formData()`, then redirect: failures to `/auth/<page>?
 
 - `src/pages/` — routes; `src/pages/api/` — endpoints. `src/layouts/`, `src/components/{auth,ui}/`.
 - `src/lib/` — services and helpers (`src/lib/services/` once business logic is extracted). Shared entities and DTOs go in `src/types.ts`; React hooks in `src/components/hooks/`.
+- `src/db/database.types.ts` — generated Supabase TypeScript types. Regenerate with `npm run db:types`; never hand-edit it.
 - Import via the `@/*` alias (maps to `./src/*` in `@tsconfig.json`), not deep relative paths.
 - Astro components for static content and layout; add a React island only when the UI needs interactivity.
 - shadcn/ui components live in `src/components/ui/` and use the "new-york" variant (`@components.json`); generate them rather than hand-writing.
-- Supabase migrations go in `supabase/migrations/` named `YYYYMMDDHHmmss_short_description.sql`. Enable RLS on every new table with granular per-operation, per-role policies. No migrations exist yet — the app uses Auth's built-in `auth.users` only.
+- Supabase migrations go in `supabase/migrations/` named `YYYYMMDDHHmmss_short_description.sql`. Enable RLS on every new table with granular per-operation, per-role policies, including explicit `anon`-denial policies. Spell out table grants instead of relying on defaults. Every function must pin `search_path = ''`; `SECURITY DEFINER` functions must also `revoke execute` from API roles unless they are intentionally callable. Every new per-person table ships with an isolation assertion in `@scripts/rls-check.mjs`.
 
 ## Cloudflare Workers
 

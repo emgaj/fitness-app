@@ -56,6 +56,10 @@ npm run dev
 - `npm run lint:fix` - Auto-fix ESLint issues
 - `npm run format` - Run Prettier
 - `npm run smoke` - Smoke test the auth flow against a running server (`BASE_URL`, defaults to `http://localhost:4321`)
+- `npm run rls-check` - Verify local profile RLS isolation with the publishable key
+- `npm run db:reset` - Reset the local Supabase database and apply migrations
+- `npm run db:types` - Regenerate Supabase TypeScript types into `src/db/database.types.ts`
+- `npm run db:push` - Apply migrations to the linked hosted Supabase project
 
 ## Project Structure
 
@@ -112,7 +116,13 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+Apply the local migrations, regenerate generated database types, and verify RLS isolation before building features on the database:
+
+```bash
+npm run db:reset
+npm run db:types
+npm run rls-check
+```
 
 ### Using a cloud Supabase project instead
 
@@ -167,6 +177,16 @@ A lint or type error fails the build and **nothing is deployed** — that is the
 Node is pinned by `.nvmrc`. `.tool-versions` is gitignored on purpose: Workers Builds parses it and fails instantly on a local asdf plugin name.
 
 GitHub Actions (`.github/workflows/ci.yml`) runs the same checks but **never deploys**, so the two pipelines cannot race.
+
+### Applying hosted Supabase migrations
+
+Hosted database migrations are a separate, human-approved step from Worker deploys. After confirming the Supabase CLI is linked to the intended project and the migration is isolated in its own commit, apply it with:
+
+```bash
+npm run db:push
+```
+
+Treat every hosted migration as a no-auto-rollback boundary: `wrangler rollback` reverts Worker code only, not Supabase schema or data. Recover forward with a new migration instead; see [Rollback](#rollback).
 
 ### Deploying manually
 

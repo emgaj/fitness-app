@@ -447,29 +447,29 @@ Rollback is forward-only. The undo is a new migration dropping the trigger, func
 
 #### Automated
 
-- [x] 3.1 `npm run rls-check` exits `0` against a local Supabase with the migration applied
-- [x] 3.2 The check fails when the `authenticated` select policy is temporarily broadened to `using (true)`
-- [x] 3.3 `npm run lint` passes on the new script
-- [ ] 3.4 The `smoke` job passes end to end in CI with the isolation step visible in the log
-- [x] 3.7 The types-drift step fails when `src/db/database.types.ts` is stale
-- [x] 3.8 The positive-control assertion fails when the `authenticated` update policy is sabotaged to `using (false)`
+- [x] 3.1 `npm run rls-check` exits `0` against a local Supabase with the migration applied — 453171a
+- [x] 3.2 The check fails when the `authenticated` select policy is temporarily broadened to `using (true)` — 453171a
+- [x] 3.3 `npm run lint` passes on the new script — 453171a
+- [x] 3.4 The `smoke` job passes end to end in CI with the isolation step visible in the log — 453171a
+- [x] 3.7 The types-drift step fails when `src/db/database.types.ts` is stale — 453171a
+- [x] 3.8 The positive-control assertion fails when the `authenticated` update policy is sabotaged to `using (false)` — 453171a
 
 #### Manual
 
-- [x] 3.5 The failure output is readable enough to diagnose a policy regression without reading the script source
-- [x] 3.6 The sabotage test names the specific assertion that broke
+- [x] 3.5 The failure output is readable enough to diagnose a policy regression without reading the script source — 453171a
+- [x] 3.6 The sabotage test names the specific assertion that broke — 453171a
 
 ### Phase 4: Apply to the hosted project and document the pattern
 
 #### Automated
 
-- [ ] 4.1 `npx supabase migration list` shows the migration applied both locally and remotely
-- [ ] 4.2 Security advisor returns no security finding referencing `profiles`, `handle_new_user` or `set_updated_at`
-- [ ] 4.3 The catalog query returns identical output locally and on the hosted project
-- [ ] 4.4 `npm run lint` and `npx prettier --check` on the touched files pass after the documentation edits
+- [x] 4.1 `npx supabase migration list` shows the migration applied both locally and remotely
+- [x] 4.2 Security advisor returns no security finding referencing `profiles`, `handle_new_user` or `set_updated_at`
+- [x] 4.3 The catalog query returns identical output locally and on the hosted project
+- [x] 4.4 `npm run lint` and `npx prettier --check` on the touched files pass after the documentation edits
 
 #### Manual
 
-- [ ] 4.5 Signing up on the deployed Worker creates exactly one `profiles` row for the new account
-- [ ] 4.6 A contributor following README from a clean clone reaches a working local database
-- [ ] 4.7 `README.md` no longer claims no migrations are required
+- [x] 4.5 Signing up on the deployed Worker creates exactly one `profiles` row for the new account
+- [x] 4.6 A contributor following README from a clean clone reaches a working local database
+- [x] 4.7 `README.md` no longer claims no migrations are required
