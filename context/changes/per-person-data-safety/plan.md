@@ -419,29 +419,29 @@ Rollback is forward-only. The undo is a new migration dropping the trigger, func
 
 #### Automated
 
-- [x] 1.1 `npx supabase db reset` completes without error and applies the migration to an empty database
-- [x] 1.2 `npx supabase migration list` shows the migration as applied locally
-- [x] 1.3 `npm run lint` passes
-- [x] 1.4 Prettier reports no formatting drift on touched files: `npx prettier --check package.json`
+- [x] 1.1 `npx supabase db reset` completes without error and applies the migration to an empty database — 8ada8e9
+- [x] 1.2 `npx supabase migration list` shows the migration as applied locally — 8ada8e9
+- [x] 1.3 `npm run lint` passes — 8ada8e9
+- [x] 1.4 Prettier reports no formatting drift on touched files: `npx prettier --check package.json` — 8ada8e9
 
 #### Manual
 
-- [x] 1.5 In local Studio, `public.profiles` shows RLS enabled with eight policies listed
-- [x] 1.6 Signing up through the running app creates exactly one matching `profiles` row
+- [x] 1.5 In local Studio, `public.profiles` shows RLS enabled with eight policies listed — 8ada8e9
+- [x] 1.6 Signing up through the running app creates exactly one matching `profiles` row — 8ada8e9
 
 ### Phase 2: Typed, request-scoped data-access contract
 
 #### Automated
 
-- [ ] 2.1 `npx astro sync && npx astro check` passes with zero errors
-- [ ] 2.2 `npm run lint` passes
-- [ ] 2.3 `npm run build` succeeds
-- [ ] 2.4 `BASE_URL=http://localhost:4321 npm run smoke` passes against `npm run preview`
+- [x] 2.1 `npx astro sync && npx astro check` passes with zero errors
+- [x] 2.2 `npm run lint` passes
+- [x] 2.3 `npm run build` succeeds
+- [x] 2.4 `BASE_URL=http://localhost:4321 npm run smoke` passes against `npm run preview`
 
 #### Manual
 
-- [ ] 2.5 Sign-in, sign-up and sign-out behave identically in a browser, including the wrong-password error
-- [ ] 2.6 With secrets removed from `.dev.vars`, the app degrades to the documented redirect rather than a 500
+- [x] 2.5 Sign-in, sign-up and sign-out behave identically in a browser, including the wrong-password error
+- [x] 2.6 With secrets removed from `.dev.vars`, the app degrades to the documented redirect rather than a 500
 
 ### Phase 3: Isolation proof and CI enforcement
 

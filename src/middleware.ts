@@ -14,6 +14,7 @@ const NO_STORE = "private, no-cache, no-store, must-revalidate, max-age=0";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createClient(context.request.headers, context.cookies);
+  context.locals.supabase = supabase;
 
   if (supabase) {
     const {
