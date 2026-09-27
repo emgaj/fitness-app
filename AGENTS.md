@@ -9,6 +9,8 @@ Astro 7 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 - Read env vars only via `astro:env/server`, never `process.env` or `import.meta.env`. Secrets are declared in the `env.schema` block of `@astro.config.mjs`.
 - Do not add Next.js directives (`"use client"`) to React components.
 - Build class names with `cn()` from `@src/lib/utils.ts`; never concatenate Tailwind strings.
+- `npm run dev` and `npm run preview` **already run on Cloudflare's workerd**. Never `wrangler dev` (redundant) and never `wrangler pages dev` (wrong product — this is Workers Static Assets; Pages is in maintenance mode).
+- `Astro.locals.runtime` was removed in Astro v6 and every access now **throws** — see [Cloudflare Workers](#cloudflare-workers). Most tutorials and pretrained answers still use it.
 
 ## Commands
 
@@ -33,8 +35,33 @@ Auth POST endpoints read `formData()`, then redirect: failures to `/auth/<page>?
 - shadcn/ui components live in `src/components/ui/` and use the "new-york" variant (`@components.json`); generate them rather than hand-writing.
 - Supabase migrations go in `supabase/migrations/` named `YYYYMMDDHHmmss_short_description.sql`. Enable RLS on every new table with granular per-operation, per-role policies. No migrations exist yet — the app uses Auth's built-in `auth.users` only.
 
+## Cloudflare Workers
+
+Deployment, secrets and rollback: `@README.md`. The rules below are the ones stale tutorials get wrong.
+
+**`Astro.locals.runtime` was removed in Astro v6.** The adapter keeps a `runtime` object whose every getter **throws** a descriptive `Error` naming the replacement (`@astrojs/cloudflare/dist/utils/cf-helpers.js`). It is also defined `enumerable: false`, so it does **not** appear in a `console.log(Astro.locals)` dump — absence there is not evidence it is gone.
+
+| Removed                       | Use instead                                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| `Astro.locals.runtime.env`    | `import { env } from "cloudflare:workers"` — but in this app, read secrets via `astro:env/server` |
+| `Astro.locals.runtime.cf`     | `Astro.request.cf`                                                                                |
+| `Astro.locals.runtime.ctx`    | `Astro.locals.cfContext`                                                                          |
+| `Astro.locals.runtime.caches` | the global `caches` object                                                                        |
+
+**Build variables ≠ runtime secrets.** Cloudflare keeps two disjoint stores. Workers Builds build variables are deliberately **empty** here and are invisible at runtime; the Worker reads `SUPABASE_URL`/`SUPABASE_KEY` from `wrangler secret put`. Never add a credential to `wrangler.jsonc`, `astro.config.mjs` or anything else tracked in git.
+
+**Changing the deployed URL means changing Supabase.** Confirmation links are built from the hosted Supabase **Auth → Site URL / Redirect URLs**, not from the app: `signUp()` in `@src/pages/api/auth/signup.ts` passes no `emailRedirectTo`, and `supabase/config.toml` pins a localhost `site_url` that only applies locally. Update the dashboard whenever the deployed hostname changes, or signup silently links users to the wrong origin.
+
+**The `no-store` carve-out.** `@src/middleware.ts` sets `Cache-Control: private, no-cache, no-store, must-revalidate, max-age=0` on **every** SSR response so a `Set-Cookie` can never be replayed to another user. Static assets are unaffected — they are served by the `ASSETS` binding and never reach the Worker. **Before adding any cacheable public page, carve it out explicitly** rather than loosening the blanket rule.
+
+**`.tool-versions` must stay gitignored.** Workers Builds parses it and fails in under a second with no mention of the file. `.nvmrc` (`22.17.1`) is the Node pin.
+
+**`wrangler deploy` rewrites `wrangler.jsonc`** (retabs, expands `compatibility_flags`, strips the trailing newline). Repair with `npx prettier --write wrangler.jsonc`. `--dry-run` does not do this.
+
 ## Environment and CI
 
 Environment setup, local Supabase and deployment: `@README.md`. The one trap it buries — `SUPABASE_URL` and `SUPABASE_KEY` must be present in **both** `.env` (Node) and `.dev.vars` (workerd); setting only one leaves `createClient()` returning `null` in the runtime you're actually testing.
 
-`@.github/workflows/ci.yml` gates `main` with two jobs: `ci` (lint, `astro check`, build — needs `SUPABASE_URL`/`SUPABASE_KEY` repo secrets) and `smoke` (local Supabase + production preview). Husky + lint-staged auto-fixes `*.{ts,tsx,astro}` with ESLint and `*.{json,css,md}` with Prettier on commit.
+**Pushing to `main` deploys to production.** Cloudflare Workers Builds clones, runs `npx astro sync && npm run lint && npx astro check && npm run build`, then `npx wrangler deploy`. A lint or type error fails the build and nothing ships. `astro sync` **must** run first — `.astro/` is gitignored, so without it the type-aware lint rules produce 26 errors in a fresh clone. GitHub Actions does **not** deploy; keep it that way so the two pipelines never race.
+
+`@.github/workflows/ci.yml` gates `main` with two jobs: `ci` (lint, `astro check`, build) and `smoke` (local Supabase + production preview). Neither needs repository secrets — both env vars are `optional: true` in `@astro.config.mjs`, so the build succeeds without them. Husky + lint-staged auto-fixes `*.{ts,tsx,astro}` with ESLint and `*.{json,css,md}` with Prettier on commit.
