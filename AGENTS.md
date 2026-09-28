@@ -38,7 +38,7 @@ Auth POST endpoints read `formData()`, then redirect: failures to `/auth/<page>?
 - Import via the `@/*` alias (maps to `./src/*` in `@tsconfig.json`), not deep relative paths.
 - Astro components for static content and layout; add a React island only when the UI needs interactivity.
 - shadcn/ui components live in `src/components/ui/` and use the "new-york" variant (`@components.json`); generate them rather than hand-writing.
-- Supabase migrations go in `supabase/migrations/` named `YYYYMMDDHHmmss_short_description.sql`. Enable RLS on every new table with granular per-operation, per-role policies, including explicit `anon`-denial policies. Spell out table grants instead of relying on defaults. Every function must pin `search_path = ''`; `SECURITY DEFINER` functions must also `revoke execute` from API roles unless they are intentionally callable. Every new per-person table ships with an isolation assertion in `@scripts/rls-check.mjs`.
+- Supabase migrations go in `supabase/migrations/` named `YYYYMMDDHHmmss_short_description.sql`. Enable RLS on every new table with granular per-operation, per-role policies, including explicit `anon`-denial policies. Spell out table grants with `revoke all ... from <role>;` _before_ `grant ...;` — a bare grant is additive on top of Supabase's default privileges, which already grant ALL (including `TRUNCATE`, which RLS cannot filter) to `anon` and `authenticated`. Every function must pin `search_path = ''`; `SECURITY DEFINER` functions must also `revoke execute` from API roles unless they are intentionally callable. Every new per-person table ships with an isolation assertion in `@scripts/rls-check.mjs`.
 
 ## Cloudflare Workers
 
