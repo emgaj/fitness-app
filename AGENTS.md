@@ -28,7 +28,7 @@ There is no unit-test framework yet. `@scripts/smoke.mjs` is a dependency-free H
 
 ## Auth conventions
 
-Auth POST endpoints read `formData()`, then redirect: failures to `/auth/<page>?error=<encoded message>`, success to `/`. Follow that redirect-with-query-param shape rather than returning JSON. Gate new routes by adding paths to `PROTECTED_ROUTES` in `@src/middleware.ts`; `context.locals.user` is populated there on every request.
+Auth POST endpoints read `formData()`, then redirect: failures to `/auth/<page>?error=<encoded message>`, success to the endpoint's own destination — `/dashboard` for signin, `/auth/confirm-email` for signup, `/` for signout. Follow that redirect-with-query-param shape rather than returning JSON. Gate new routes by adding paths to `PROTECTED_ROUTES` in `@src/middleware.ts`; `context.locals.user` is populated there on every request.
 
 ## Where code goes
 

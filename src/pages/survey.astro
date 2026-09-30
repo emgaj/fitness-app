@@ -1,0 +1,51 @@
+---
+import SurveyForm, { type SurveyFormInitialAnswers } from "@/components/survey/SurveyForm";
+import Layout from "@/layouts/Layout.astro";
+
+let error = Astro.url.searchParams.get("error");
+let initialAnswers: SurveyFormInitialAnswers = {};
+
+const { supabase, user } = Astro.locals;
+
+if (!supabase) {
+  error ??= "Supabase is not configured. Saved survey answers cannot be loaded right now.";
+} else if (user) {
+  const { data, error: loadError } = await supabase
+    .from("profiles")
+    .select(
+      "goal, activity_last_month, cardio_experience, strength_experience, training_days, intense_days, session_minutes, impact_allowed, preferred_trainers",
+    )
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (loadError) {
+    error ??= "We could not load your saved survey answers. You can still submit the form.";
+  } else if (data) {
+    initialAnswers = {
+      goal: data.goal,
+      activity_last_month: data.activity_last_month,
+      cardio_experience: data.cardio_experience,
+      strength_experience: data.strength_experience,
+      training_days: data.training_days,
+      intense_days: data.intense_days,
+      session_minutes: data.session_minutes,
+      impact_allowed: data.impact_allowed,
+      preferred_trainers: data.preferred_trainers,
+    };
+  }
+}
+---
+
+<Layout title="Training survey">
+  <main class="bg-cosmic min-h-screen px-4 pt-10 pb-28 text-white">
+    <div class="mx-auto max-w-3xl">
+      <div class="mb-8 text-center">
+        <h1 class="bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-3xl font-bold text-transparent">
+          Tell HomeFit how you train
+        </h1>
+      </div>
+
+      <SurveyForm initialAnswers={initialAnswers} serverError={error} client:load />
+    </div>
+  </main>
+</Layout>

@@ -965,39 +965,39 @@ from here.
 
 #### Automated
 
-- [x] 4.1 Type checking passes: `npx astro check`
-- [x] 4.2 Linting passes: `npm run lint`
+- [x] 4.1 Type checking passes: `npx astro check` — 9b273c7
+- [x] 4.2 Linting passes: `npm run lint` — 9b273c7
 
 #### Manual
 
-- [x] 4.3 A form-encoded POST from an authenticated session returns `302` to `/dashboard`
-- [x] 4.4 A POST with four training days returns `302` to `/survey?error=…`
-- [x] 4.5 A POST whose `intense_days` names a day outside `training_days` returns `302` to `/survey?error=…` with the parser's message, not a raw Postgres one
-- [x] 4.6 An unauthenticated POST returns `302` to `/auth/signin`
-- [x] 4.7 A successful POST writes all eight blocking columns plus `preferred_trainers`, `survey_version` and `survey_completed_at`, and leaves `age_band` null
-- [x] 4.8 A POST carrying `goal=strength` is rejected with a readable message
-- [x] 4.9 A POST with no `preferred_trainers` field at all still succeeds, storing `{no_preference}`
-- [x] 4.10 With `SUPABASE_URL`/`SUPABASE_KEY` unset the endpoint redirects with an error rather than returning a 500
+- [x] 4.3 A form-encoded POST from an authenticated session returns `302` to `/dashboard` — 9b273c7
+- [x] 4.4 A POST with four training days returns `302` to `/survey?error=…` — 9b273c7
+- [x] 4.5 A POST whose `intense_days` names a day outside `training_days` returns `302` to `/survey?error=…` with the parser's message, not a raw Postgres one — 9b273c7
+- [x] 4.6 An unauthenticated POST returns `302` to `/auth/signin` — 9b273c7
+- [x] 4.7 A successful POST writes all eight blocking columns plus `preferred_trainers`, `survey_version` and `survey_completed_at`, and leaves `age_band` null — 9b273c7
+- [x] 4.8 A POST carrying `goal=strength` is rejected with a readable message — 9b273c7
+- [x] 4.9 A POST with no `preferred_trainers` field at all still succeeds, storing `{no_preference}` — 9b273c7
+- [x] 4.10 With `SUPABASE_URL`/`SUPABASE_KEY` unset the endpoint redirects with an error rather than returning a 500 — 9b273c7
 
 ### Phase 5: Survey page and form island
 
 #### Automated
 
-- [ ] 5.1 Type checking passes: `npx astro check`
-- [ ] 5.2 Linting passes, including the `jsx-a11y` rules already configured: `npm run lint`
-- [ ] 5.3 Production build succeeds: `npm run build`
+- [x] 5.1 Type checking passes: `npx astro check`
+- [x] 5.2 Linting passes, including the `jsx-a11y` rules already configured: `npm run lint`
+- [x] 5.3 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 5.4 The page shows five sections and nine questions, each with its "why" line
-- [ ] 5.5 The progress indicator advances as required sections are completed and reaches 100% without the trainers section being answered
-- [ ] 5.6 Submitting with four or six training days is blocked client-side with a specific message
-- [ ] 5.7 `healthy_lifestyle` and `strength` are visible but not selectable
-- [ ] 5.8 The hard-days question offers only the selected training days, requires exactly two, and drops a day that is deselected from `training_days`
-- [ ] 5.9 Selecting "No preference" clears any chosen trainer, and choosing a trainer clears "No preference"
-- [ ] 5.10 A completed survey, revisited at `/survey`, shows the person's current answers pre-filled
-- [ ] 5.11 Changing an answer and resubmitting persists the change
-- [ ] 5.12 The `?error=` message from a server-side rejection is displayed
+- [x] 5.4 The page shows five sections and nine questions, each with its "why" line
+- [x] 5.5 The progress indicator advances as required sections are completed and reaches 100% without the trainers section being answered
+- [x] 5.6 Submitting with four or six training days is blocked client-side with a specific message
+- [x] 5.7 `healthy_lifestyle` and `strength` are visible but not selectable
+- [x] 5.8 The hard-days question offers only the selected training days, requires exactly two, and drops a day that is deselected from `training_days`
+- [x] 5.9 Selecting "No preference" clears any chosen trainer, and choosing a trainer clears "No preference"
+- [x] 5.10 A completed survey, revisited at `/survey`, shows the person's current answers pre-filled
+- [x] 5.11 Changing an answer and resubmitting persists the change
+- [x] 5.12 The `?error=` message from a server-side rejection is displayed
 
 ### Phase 6: Gating and end-to-end verification
 

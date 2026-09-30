@@ -74,7 +74,7 @@ const steps = [
   [
     "signin accepts correct password",
     () => request("/api/auth/signin", { method: "POST", form: { email, password } }),
-    { status: 302, location: "/", cacheControl: "no-store" },
+    { status: 302, location: "/dashboard", cacheControl: "no-store" },
   ],
   ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200, cacheControl: "no-store" }],
   ...(REFRESH_WAIT_SECONDS > 0
