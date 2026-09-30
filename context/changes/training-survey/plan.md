@@ -915,35 +915,35 @@ from here.
 
 #### Automated
 
-- [x] 1.1 Formatting passes: `npx prettier --check context/foundation/prd.md context/foundation/survey-spec.md context/foundation/roadmap.md`
-- [x] 1.2 Repository lint passes: `npm run lint`
+- [x] 1.1 Formatting passes: `npx prettier --check context/foundation/prd.md context/foundation/survey-spec.md context/foundation/roadmap.md` — 6beca41
+- [x] 1.2 Repository lint passes: `npm run lint` — 6beca41
 
 #### Manual
 
-- [x] 1.3 `FR-003` names all eight blocking inputs and no longer refers to a self-rated fitness level
-- [x] 1.4 `FR-004` states that trainer preference is collected during setup from a provisional list that F-03 replaces
-- [x] 1.5 The `Delta against the PRD` table reads as resolved, with no "pending decision" language
-- [x] 1.6 `survey-spec.md` Open question 3 records "columns on `profiles`" and its reasoning
-- [x] 1.7 Roadmap S-01, both the block and the at-a-glance row, describes the delivered scope, and `change.md`'s `title` matches it
-- [x] 1.8 `survey-spec.md` records `equipment` as deferred, with the `bodyweight_only` exclusivity reason
-- [x] 1.9 `survey-spec.md` lists `preferred_trainers` as asked-at-setup, skippable and non-blocking, and `intense_days` as asked-at-setup, required and exactly two of the training days, with the deferred set reduced to `age_band`
+- [x] 1.3 `FR-003` names all eight blocking inputs and no longer refers to a self-rated fitness level — 6beca41
+- [x] 1.4 `FR-004` states that trainer preference is collected during setup from a provisional list that F-03 replaces — 6beca41
+- [x] 1.5 The `Delta against the PRD` table reads as resolved, with no "pending decision" language — 6beca41
+- [x] 1.6 `survey-spec.md` Open question 3 records "columns on `profiles`" and its reasoning — 6beca41
+- [x] 1.7 Roadmap S-01, both the block and the at-a-glance row, describes the delivered scope, and `change.md`'s `title` matches it — 6beca41
+- [x] 1.8 `survey-spec.md` records `equipment` as deferred, with the `bodyweight_only` exclusivity reason — 6beca41
+- [x] 1.9 `survey-spec.md` lists `preferred_trainers` as asked-at-setup, skippable and non-blocking, and `intense_days` as asked-at-setup, required and exactly two of the training days, with the deferred set reduced to `age_band` — 6beca41
 
 ### Phase 2: Survey data contract
 
 #### Automated
 
-- [ ] 2.1 Local database resets and applies the migration: `npm run db:reset`
-- [ ] 2.2 Types regenerate without manual edits: `npm run db:types`
-- [ ] 2.3 Isolation and constraint assertions pass: `npm run rls-check`
-- [ ] 2.4 Type checking passes: `npx astro sync && npx astro check`
-- [ ] 2.5 Linting passes: `npm run lint`
+- [x] 2.1 Local database resets and applies the migration: `npm run db:reset`
+- [x] 2.2 Types regenerate without manual edits: `npm run db:types`
+- [x] 2.3 Isolation and constraint assertions pass: `npm run rls-check`
+- [x] 2.4 Type checking passes: `npx astro sync && npx astro check`
+- [x] 2.5 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.6 The migration file is alone in its commit — no types, no scripts, no config
-- [ ] 2.7 `src/db/database.types.ts` shows all six enums under `public.Enums` and twelve new columns on `profiles`
-- [ ] 2.8 Every new column carries a comment, and the closing comment explains the absent policy block
-- [ ] 2.9 A hosted push is not attempted in this phase
+- [x] 2.6 The migration file is alone in its commit — no types, no scripts, no config
+- [x] 2.7 `src/db/database.types.ts` shows all six enums under `public.Enums` and twelve new columns on `profiles`
+- [x] 2.8 Every new column carries a comment, and the closing comment explains the absent policy block
+- [x] 2.9 A hosted push is not attempted in this phase
 
 ### Phase 3: UI primitives
 

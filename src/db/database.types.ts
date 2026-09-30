@@ -30,18 +30,54 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          activity_last_month: Database["public"]["Enums"]["survey_activity_level"] | null;
+          age_band: Database["public"]["Enums"]["survey_age_band"] | null;
+          cardio_experience: Database["public"]["Enums"]["survey_experience"] | null;
           created_at: string;
+          goal: Database["public"]["Enums"]["survey_goal"] | null;
           id: string;
+          impact_allowed: boolean | null;
+          intense_days: Database["public"]["Enums"]["weekday"][] | null;
+          preferred_trainers: string[] | null;
+          session_minutes: Database["public"]["Enums"]["survey_session_minutes"] | null;
+          strength_experience: Database["public"]["Enums"]["survey_experience"] | null;
+          survey_completed_at: string | null;
+          survey_version: number | null;
+          training_days: Database["public"]["Enums"]["weekday"][] | null;
           updated_at: string;
         };
         Insert: {
+          activity_last_month?: Database["public"]["Enums"]["survey_activity_level"] | null;
+          age_band?: Database["public"]["Enums"]["survey_age_band"] | null;
+          cardio_experience?: Database["public"]["Enums"]["survey_experience"] | null;
           created_at?: string;
+          goal?: Database["public"]["Enums"]["survey_goal"] | null;
           id: string;
+          impact_allowed?: boolean | null;
+          intense_days?: Database["public"]["Enums"]["weekday"][] | null;
+          preferred_trainers?: string[] | null;
+          session_minutes?: Database["public"]["Enums"]["survey_session_minutes"] | null;
+          strength_experience?: Database["public"]["Enums"]["survey_experience"] | null;
+          survey_completed_at?: string | null;
+          survey_version?: number | null;
+          training_days?: Database["public"]["Enums"]["weekday"][] | null;
           updated_at?: string;
         };
         Update: {
+          activity_last_month?: Database["public"]["Enums"]["survey_activity_level"] | null;
+          age_band?: Database["public"]["Enums"]["survey_age_band"] | null;
+          cardio_experience?: Database["public"]["Enums"]["survey_experience"] | null;
           created_at?: string;
+          goal?: Database["public"]["Enums"]["survey_goal"] | null;
           id?: string;
+          impact_allowed?: boolean | null;
+          intense_days?: Database["public"]["Enums"]["weekday"][] | null;
+          preferred_trainers?: string[] | null;
+          session_minutes?: Database["public"]["Enums"]["survey_session_minutes"] | null;
+          strength_experience?: Database["public"]["Enums"]["survey_experience"] | null;
+          survey_completed_at?: string | null;
+          survey_version?: number | null;
+          training_days?: Database["public"]["Enums"]["weekday"][] | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -51,10 +87,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      array_is_distinct: { Args: { elements: unknown }; Returns: boolean };
     };
     Enums: {
-      [_ in never]: never;
+      survey_activity_level: "0" | "under_1" | "1_2" | "3_4" | "5_plus";
+      survey_age_band: "under_30" | "30s" | "40s" | "50s" | "60_plus" | "prefer_not_to_say";
+      survey_experience: "none" | "occasional" | "regular_under_6m" | "regular_6m_plus";
+      survey_goal: "weight_loss" | "healthy_lifestyle" | "strength";
+      survey_session_minutes: "20" | "30" | "45" | "60_plus";
+      weekday: "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -174,6 +215,13 @@ export const Constants = {
     Enums: {},
   },
   public: {
-    Enums: {},
+    Enums: {
+      survey_activity_level: ["0", "under_1", "1_2", "3_4", "5_plus"],
+      survey_age_band: ["under_30", "30s", "40s", "50s", "60_plus", "prefer_not_to_say"],
+      survey_experience: ["none", "occasional", "regular_under_6m", "regular_6m_plus"],
+      survey_goal: ["weight_loss", "healthy_lifestyle", "strength"],
+      survey_session_minutes: ["20", "30", "45", "60_plus"],
+      weekday: ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+    },
   },
 } as const;
