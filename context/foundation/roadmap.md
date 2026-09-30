@@ -3,7 +3,7 @@ project: HomeFit
 version: 1
 status: draft
 created: 2026-09-27
-updated: 2026-09-27
+updated: 2026-09-30
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -39,17 +39,17 @@ A person who trains at home starts every session with an unstructured decision �
 
 ## At a glance
 
-| ID   | Change ID                 | Outcome (user can …)                                                     | Prerequisites    | PRD refs                                     | Status   |
-| ---- | ------------------------- | ------------------------------------------------------------------------ | ---------------- | -------------------------------------------- | -------- |
-| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else    | —                | FR-002, §Access Control                      | done     |
-| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written  | —                | §Business Logic, §Open Questions 1, 2        | ready    |
-| F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready    |
-| S-01 | `training-survey`         | state their goal, level, five training days and preferred trainers       | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | proposed |
-| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start      | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked  |
-| S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened        | S-02             | US-02, FR-008, FR-011                        | proposed |
-| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                | S-03, F-02       | US-02, FR-002, FR-010                        | blocked  |
-| S-05 | `custom-workout-log`      | add their own workout from outside the catalogue and have it count       | S-04             | US-02, FR-009, FR-010                        | proposed |
-| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train             | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | blocked  |
+| ID   | Change ID                 | Outcome (user can …)                                                                                 | Prerequisites    | PRD refs                                     | Status      |
+| ---- | ------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- | ----------- |
+| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else                                | —                | FR-002, §Access Control                      | done        |
+| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | ready       |
+| F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready       |
+| S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | in-progress |
+| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked     |
+| S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened                                    | S-02             | US-02, FR-008, FR-011                        | proposed    |
+| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | blocked     |
+| S-05 | `custom-workout-log`      | add their own workout from outside the catalogue and have it count                                   | S-04             | US-02, FR-009, FR-010                        | proposed    |
+| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train                                         | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | blocked     |
 
 ## Streams
 
@@ -121,15 +121,15 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ### S-01: A person tells the app how they train
 
-- **Outcome:** user can sign in, state their goal, fitness level, which five days of the week they train and which trainers they prefer, and find those answers still there on their next visit.
+- **Outcome:** user can sign in, state their goal, cardio and strength experience, which five days of the week they train and which trainers they prefer from a provisional list, and find those answers still there on their next visit.
 - **Change ID:** `training-survey`
 - **PRD refs:** US-01, FR-001, FR-002, FR-003, FR-004
 - **Prerequisites:** F-01
 - **Parallel with:** F-02, F-03
 - **Blockers:** —
 - **Unknowns:** —
-- **Risk:** Sequenced first among user-facing work because every later slice reads its output — goal, level, training days and trainer preference are four of the rule's inputs. Sign-in itself is already working in the baseline, so the exposure here is the survey shape, not authentication. The known tension the PRD already accepted: a survey sits in front of first value, which is friction exactly where the product promises "start right now" — keeping it short is the mitigation, not removing it.
-- **Status:** proposed
+- **Risk:** Sequenced first among user-facing work because every later slice reads its output — goal, per-type experience, training days and trainer preference are rule inputs. Sign-in itself is already working in the baseline, so the exposure here is the survey shape, not authentication. Trainer identifiers are hardcoded in `src/types.ts` until F-03 lands; F-03 owns replacing the provisional list and reconciling stored values. The known tension the PRD already accepted: a survey sits in front of first value, which is friction exactly where the product promises "start right now" — keeping it short is the mitigation, not removing it.
+- **Status:** in-progress
 
 ### S-02: A person is told what to train today
 
@@ -201,7 +201,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | F-01       | `per-person-data-safety`  | Establish per-person data access contract                       | yes                   | Run `/10x-plan per-person-data-safety`          |
 | F-02       | `coaching-week-spec`      | Specify the five-day template and counterbalancing map          | yes                   | Highest fan-out; unblocks S-02, S-04, S-06      |
 | F-03       | `curated-video-catalogue` | Curate and tag the ~20-video catalogue                          | yes                   | Parallel with F-01 and F-02                     |
-| S-01       | `training-survey`         | Person completes the training survey                            | no                    | Waiting on F-01                                 |
+| S-01       | `training-survey`         | Person completes the training survey                            | yes                   | F-01 done; run `/10x-plan training-survey`      |
 | S-02       | `todays-pick`             | Person sees today's pick among three proposals                  | no                    | Blocked: template undefined (Open Question 1)   |
 | S-03       | `session-confirmation`    | Person confirms whether the previous session happened           | no                    | Waiting on S-02                                 |
 | S-04       | `week-reshaping`          | Remaining days reshape after a session is recorded              | no                    | Blocked: counterbalancing map undefined (Q2)    |

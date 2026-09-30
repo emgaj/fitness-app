@@ -30,13 +30,16 @@ The insight: a search box gives no recommendation based on what the person alrea
 ## Success Criteria
 
 ### Primary
+
 - A person completes the survey once and, on any day they open the app — a day they planned to train or not — they get an answer without searching anywhere else. On a planned day that answer is the day's pick; on an unplanned day it is a recommended path — a session moved from later in the week, a one-off outside the plan, or rest — with the alternatives still open to them.
 - Logging a session — a proposed video marked done, or a custom workout typed in with its type and intensity — changes what the app proposes for the remaining days of that week. A plan that never changes in response to what actually happened has not proven the product.
 
 ### Secondary
+
 - The person can rate a video ("I like this one, give it to me more often as cardio") and future proposals reflect that. Nice to have; not sufficient on its own, and out of MVP scope.
 
 ### Guardrails
+
 - The same video is never proposed two days in a row.
 - The weekly plan survives a page reload and a return on a later day — it is the same plan the person left.
 - No day is ever a dead end. Every day the person opens the app gives them an answer — a workout, or a reason to rest.
@@ -50,6 +53,7 @@ The insight: a search box gives no recommendation based on what the person alrea
 - **Then** they see the day's pick highlighted among three proposals, ready to open and start
 
 #### Acceptance Criteria
+
 - The pick appears without the person searching, filtering or browsing the catalogue.
 - The highlighted pick is not the video proposed the previous day.
 - Taking one of the other two proposals instead is enough; there is no separate swap flow.
@@ -61,6 +65,7 @@ The insight: a search box gives no recommendation based on what the person alrea
 - **Then** the proposals for the remaining days of that week change to account for what was just done
 
 #### Acceptance Criteria
+
 - What was logged changes the type, the intensity, or both, of what the remaining days propose — in whichever direction the week calls for. Cardio after an accumulation of strength days; light strength after an intense cardio session; and the same logic applied to any other combination of the two types and three intensities. No single pairing is privileged.
 - The change follows from two things together: the session just logged, and the balance of type and intensity across the week so far. Several days of one type is itself an input, independently of what yesterday was.
 - Only days from today onward change; days already past are never recomputed.
@@ -73,6 +78,7 @@ The insight: a search box gives no recommendation based on what the person alrea
 - **Then** they see one path highlighted as the recommendation — moving a session from later in the week onto today, taking a one-off that consumes no planned day, or resting with the reason stated — and the other paths remain open to them
 
 #### Acceptance Criteria
+
 - A day the person planned to train and a day they did not are visibly distinct; the person can always tell which kind of day they are looking at.
 - One path is always highlighted. The person is never handed a bare choice — the app leads, and the alternatives sit beside the recommendation rather than replacing it.
 - When a session moves onto today, the later planned day it came from is released and the week still holds five sessions. A released day behaves from then on exactly like any other unplanned day.
@@ -83,18 +89,21 @@ The insight: a search box gives no recommendation based on what the person alrea
 ## Functional Requirements
 
 ### Account and persistence
+
 - FR-001: A person can create an account and sign in. Priority: must-have
   > Socratic: sign-up is friction exactly where the product promises "start right now", and a local profile would be cheaper. Kept as written; accounts stand.
 - FR-002: A person can return and find the current week's plan and the sessions logged in it. Priority: must-have
   > Socratic: history beyond the current week has no consumer, because the rule only looks at this week. Narrowed from full history to the current week; longer history deferred to v2.
 
 ### Survey
-- FR-003: A person can complete a survey stating their goal, fitness level, and which five days of the week they train. Priority: must-have
-  > Socratic: a survey before first value repeats the cost of scrolling for a video, and self-assessed level is unreliable. Kept, then narrowed: the MVP week is fixed at five training days, so the survey asks which five days rather than how many — and what it collects is an intention the person may not hold to.
-- FR-004: A person can choose preferred trainers from the curated catalogue, as a soft preference. Priority: must-have
-  > Socratic: with a catalogue of roughly twenty videos, filtering by trainer can leave too little material to fill a week. The preference became soft — when preferred trainers cannot fill the week the plan draws from the rest of the catalogue, and the matching rule outranks trainer preference whenever the two conflict.
+
+- FR-003: A person can complete a survey stating `goal`, `activity_last_month`, `cardio_experience`, `strength_experience`, which five `training_days` they intend to train, exactly two `intense_days` from those days, `session_minutes`, and `impact_allowed`. Priority: must-have
+  > Socratic: a survey before first value repeats the cost of scrolling for a video, and self-assessed level is unreliable. Kept, then narrowed: the MVP week is fixed at five training days, so the survey asks which five days rather than how many — and what it collects is an intention the person may not hold to. Reinterpreted: "fitness level" is not a self-rated beginner/intermediate/advanced label; the blocking inputs are recent activity plus separate cardio and strength experience, because the catalogue's two training types are not interchangeable. The Tier-2 inputs collected in v1 are session length, impact tolerance, and the two high-energy days; `equipment` is deliberately not collected in v1 because `bodyweight_only` needs an exclusivity decision before that question can be safely asked.
+- FR-004: A person can choose preferred trainers from a provisional list hardcoded in `src/types.ts`, as a soft preference; F-03 replaces that list with the curated catalogue. Priority: must-have
+  > Socratic: with a catalogue of roughly twenty videos, filtering by trainer can leave too little material to fill a week. The preference became soft — when preferred trainers cannot fill the week the plan draws from the rest of the catalogue, and the matching rule outranks trainer preference whenever the two conflict. Reinterpreted for S-01: trainer preference is collected during setup from a provisional list so the survey can ship before F-03; F-03 owns replacing the hardcoded identifiers with catalogue trainers and reconciling stored values.
 
 ### Plan and proposal
+
 - FR-005: A person can see a weekly plan built from their survey answers. Priority: must-have
   > Socratic: only "what do I do today" is needed, and a week shown up front misleads because it will be rebuilt anyway. Kept as written.
 - FR-006: A person can see three proposed videos for a training day, with one highlighted as that day's pick. Priority: must-have
@@ -109,6 +118,7 @@ The insight: a search box gives no recommendation based on what the person alrea
   > Socratic: a sixth session runs against the recovery the five-day template assumes, so the app is adding a way for the person to undermine their own plan. Kept as the person's call: the app declines to highlight the one-off when the balance argues against it, but never blocks it. The session counts into the week's balance like any other, so the remaining days respond to what actually happened.
 
 ### Logging and adaptation
+
 - FR-008: A person can confirm, when they next open the app, whether the previous session happened. Priority: must-have
   > Socratic: nobody returns to the app right after training, so a "mark done" button placed after the workout would collect nothing and starve the rule of input. Revised — the app asks about the previous session on the person's next visit.
 - FR-009: A person can add their own workout from outside the catalogue, stating its type and intensity. Priority: must-have
@@ -119,6 +129,7 @@ The insight: a search box gives no recommendation based on what the person alrea
   > Socratic: a visible skip count demotivates, and the record has no consumer while the plan ignores it. Kept, and reworded away from "skipped" — once planned days are intentions rather than commitments, calling an unused day a skip mislabels a legitimate choice. The plan does not react to such days in the MVP; reacting to them is v2.
 
 ### Out of MVP
+
 - FR-012: A person can follow a three-day or four-day training week. Priority: nice-to-have
   > The MVP ships a single five-day template so the coaching research stays bounded to one week shape; three- and four-day templates need their own methodology work and wait for v2.
 
