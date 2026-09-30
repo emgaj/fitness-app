@@ -932,34 +932,34 @@ from here.
 
 #### Automated
 
-- [x] 2.1 Local database resets and applies the migration: `npm run db:reset`
-- [x] 2.2 Types regenerate without manual edits: `npm run db:types`
-- [x] 2.3 Isolation and constraint assertions pass: `npm run rls-check`
-- [x] 2.4 Type checking passes: `npx astro sync && npx astro check`
-- [x] 2.5 Linting passes: `npm run lint`
+- [x] 2.1 Local database resets and applies the migration: `npm run db:reset` — f22a11d
+- [x] 2.2 Types regenerate without manual edits: `npm run db:types` — f22a11d
+- [x] 2.3 Isolation and constraint assertions pass: `npm run rls-check` — f22a11d
+- [x] 2.4 Type checking passes: `npx astro sync && npx astro check` — f22a11d
+- [x] 2.5 Linting passes: `npm run lint` — f22a11d
 
 #### Manual
 
-- [x] 2.6 The migration file is alone in its commit — no types, no scripts, no config
-- [x] 2.7 `src/db/database.types.ts` shows all six enums under `public.Enums` and twelve new columns on `profiles`
-- [x] 2.8 Every new column carries a comment, and the closing comment explains the absent policy block
-- [x] 2.9 A hosted push is not attempted in this phase
+- [x] 2.6 The migration file is alone in its commit — no types, no scripts, no config — f22a11d
+- [x] 2.7 `src/db/database.types.ts` shows all six enums under `public.Enums` and twelve new columns on `profiles` — f22a11d
+- [x] 2.8 Every new column carries a comment, and the closing comment explains the absent policy block — f22a11d
+- [x] 2.9 A hosted push is not attempted in this phase — f22a11d
 
 ### Phase 3: UI primitives
 
 #### Automated
 
-- [ ] 3.1 All five component files exist under `src/components/ui/`
-- [ ] 3.2 Dependencies install cleanly: `npm install`
-- [ ] 3.3 Type checking passes: `npx astro check`
-- [ ] 3.4 Linting passes: `npm run lint`
-- [ ] 3.5 Production build succeeds: `npm run build`
+- [x] 3.1 All five component files exist under `src/components/ui/`
+- [x] 3.2 Dependencies install cleanly: `npm install`
+- [x] 3.3 Type checking passes: `npx astro check`
+- [x] 3.4 Linting passes: `npm run lint`
+- [x] 3.5 Production build succeeds: `npm run build`
 
 #### Manual
 
-- [ ] 3.6 Generated components visually match the existing `Button`'s new-york styling
-- [ ] 3.7 No `"use client"` directive was introduced
-- [ ] 3.8 No component was hand-edited after generation
+- [x] 3.6 Generated components visually match the existing `Button`'s new-york styling
+- [x] 3.7 No `"use client"` directive was introduced
+- [x] 3.8 No component was hand-edited after generation
 
 ### Phase 4: Persistence layer
 
