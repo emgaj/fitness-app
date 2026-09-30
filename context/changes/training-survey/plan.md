@@ -1011,17 +1011,17 @@ from here.
 
 #### Automated
 
-- [x] 6.1 Smoke test passes with the new steps: `BASE_URL=http://localhost:4321 npm run smoke` against `npm run preview`
-- [x] 6.2 Isolation and constraint assertions still pass: `npm run rls-check`
-- [x] 6.3 The full CI sequence passes: `npx astro sync && npm run lint && npx astro check && npm run build`
+- [x] 6.1 Smoke test passes with the new steps: `BASE_URL=http://localhost:4321 npm run smoke` against `npm run preview` — 5f312d2
+- [x] 6.2 Isolation and constraint assertions still pass: `npm run rls-check` — 5f312d2
+- [x] 6.3 The full CI sequence passes: `npx astro sync && npm run lint && npx astro check && npm run build` — 5f312d2
 
 #### Manual
 
-- [ ] 6.4 A newly signed-up person opening `/dashboard` lands on `/survey` — VOID: soft gate, superseded by 6.10
-- [x] 6.5 Completing the survey returns them to `/dashboard`, which now renders
-- [x] 6.6 Revisiting `/survey` after completion shows the answers and does not redirect
-- [x] 6.7 No redirect loop on `/survey`, `/api/survey` or any auth route
-- [x] 6.8 An anonymous request to `/dashboard` still goes to `/auth/signin`, not `/survey`
-- [x] 6.9 Signing out and back in preserves the answers
-- [x] 6.10 A person with no completed survey opening `/dashboard` sees it render, showing the "fill in" button
-- [x] 6.11 An anonymous request to `/survey` goes to `/auth/signin`
+- [x] 6.4 A newly signed-up person opening `/dashboard` lands on `/survey` — VOID: soft gate, superseded by 6.10 — 5f312d2
+- [x] 6.5 Completing the survey returns them to `/dashboard`, which now renders — 5f312d2
+- [x] 6.6 Revisiting `/survey` after completion shows the answers and does not redirect — 5f312d2
+- [x] 6.7 No redirect loop on `/survey`, `/api/survey` or any auth route — 5f312d2
+- [x] 6.8 An anonymous request to `/dashboard` still goes to `/auth/signin`, not `/survey` — 5f312d2
+- [x] 6.9 Signing out and back in preserves the answers — 5f312d2
+- [x] 6.10 A person with no completed survey opening `/dashboard` sees it render, showing the "fill in" button — 5f312d2
+- [x] 6.11 An anonymous request to `/survey` goes to `/auth/signin` — 5f312d2
