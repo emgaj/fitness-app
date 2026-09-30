@@ -949,35 +949,35 @@ from here.
 
 #### Automated
 
-- [x] 3.1 All five component files exist under `src/components/ui/`
-- [x] 3.2 Dependencies install cleanly: `npm install`
-- [x] 3.3 Type checking passes: `npx astro check`
-- [x] 3.4 Linting passes: `npm run lint`
-- [x] 3.5 Production build succeeds: `npm run build`
+- [x] 3.1 All five component files exist under `src/components/ui/` — 0091300
+- [x] 3.2 Dependencies install cleanly: `npm install` — 0091300
+- [x] 3.3 Type checking passes: `npx astro check` — 0091300
+- [x] 3.4 Linting passes: `npm run lint` — 0091300
+- [x] 3.5 Production build succeeds: `npm run build` — 0091300
 
 #### Manual
 
-- [x] 3.6 Generated components visually match the existing `Button`'s new-york styling
-- [x] 3.7 No `"use client"` directive was introduced
-- [x] 3.8 No component was hand-edited after generation
+- [x] 3.6 Generated components visually match the existing `Button`'s new-york styling — 0091300
+- [x] 3.7 No `"use client"` directive was introduced — 0091300
+- [x] 3.8 No component was hand-edited after generation — 0091300
 
 ### Phase 4: Persistence layer
 
 #### Automated
 
-- [ ] 4.1 Type checking passes: `npx astro check`
-- [ ] 4.2 Linting passes: `npm run lint`
+- [x] 4.1 Type checking passes: `npx astro check`
+- [x] 4.2 Linting passes: `npm run lint`
 
 #### Manual
 
-- [ ] 4.3 A form-encoded POST from an authenticated session returns `302` to `/dashboard`
-- [ ] 4.4 A POST with four training days returns `302` to `/survey?error=…`
-- [ ] 4.5 A POST whose `intense_days` names a day outside `training_days` returns `302` to `/survey?error=…` with the parser's message, not a raw Postgres one
-- [ ] 4.6 An unauthenticated POST returns `302` to `/auth/signin`
-- [ ] 4.7 A successful POST writes all eight blocking columns plus `preferred_trainers`, `survey_version` and `survey_completed_at`, and leaves `age_band` null
-- [ ] 4.8 A POST carrying `goal=strength` is rejected with a readable message
-- [ ] 4.9 A POST with no `preferred_trainers` field at all still succeeds, storing `{no_preference}`
-- [ ] 4.10 With `SUPABASE_URL`/`SUPABASE_KEY` unset the endpoint redirects with an error rather than returning a 500
+- [x] 4.3 A form-encoded POST from an authenticated session returns `302` to `/dashboard`
+- [x] 4.4 A POST with four training days returns `302` to `/survey?error=…`
+- [x] 4.5 A POST whose `intense_days` names a day outside `training_days` returns `302` to `/survey?error=…` with the parser's message, not a raw Postgres one
+- [x] 4.6 An unauthenticated POST returns `302` to `/auth/signin`
+- [x] 4.7 A successful POST writes all eight blocking columns plus `preferred_trainers`, `survey_version` and `survey_completed_at`, and leaves `age_band` null
+- [x] 4.8 A POST carrying `goal=strength` is rejected with a readable message
+- [x] 4.9 A POST with no `preferred_trainers` field at all still succeeds, storing `{no_preference}`
+- [x] 4.10 With `SUPABASE_URL`/`SUPABASE_KEY` unset the endpoint redirects with an error rather than returning a 500
 
 ### Phase 5: Survey page and form island
 
