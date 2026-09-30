@@ -749,30 +749,34 @@ proceeding to the next phase.
 
 ### Overview
 
-Close `/dashboard` until the survey is done, and prove the whole flow with the smoke test.
+Require sign-in for `/survey`, and prove the whole flow with the smoke test.
+
+**Revised during implementation — soft gate.** This phase originally closed `/dashboard` until the
+survey was done, redirecting a signed-in person with no completed survey to `/survey`. The human
+rejected that: `/dashboard` must always open, prompting through the state-aware button shipped in
+Phase 5 #3 rather than through a forced redirect. The completion gate is therefore **not built**,
+and the criterion asserting it is struck below. The authentication half of #1 is unaffected and
+still required.
 
 ### Changes Required:
 
-#### 1. Survey gate
+#### 1. Survey authentication gate
 
 **File**: `src/middleware.ts`
 
-**Intent**: Send a signed-in person with no completed survey to `/survey`, and require sign-in
-for `/survey` itself.
+**Intent**: Require sign-in for `/survey` itself.
 
-**Contract**: Add `/survey` to `PROTECTED_ROUTES` (`:4`) so the existing authentication gate
-covers it. Then, after the authentication check at `:28-34` and before `next()` at `:36`, add the
-completion gate: when the request path is under `/dashboard` and a user is present, read
-`survey_completed_at` for `auth.uid()` and redirect to `/survey` when it is null, setting
-`Cache-Control` on the redirect exactly as the existing branch does at `:31-32`.
+**Contract**: Add `/survey` to `PROTECTED_ROUTES` (`:4`) so the existing authentication gate at
+`:28-34` covers it. `/survey` currently returns `200` to anonymous visitors, which this closes.
 
-Two invariants: the lookup runs only for the gated prefix, never on every request; and `/survey`,
-`/api/survey` and the auth routes are never subject to the completion gate, or the redirect loops.
+No completion gate is added: `/dashboard` stays reachable with the survey unfinished. Because
+nothing redirects on completion state, the redirect-loop risk the original contract guarded
+against does not arise, and `/api/survey` — which does its own authentication check — must stay
+out of `PROTECTED_ROUTES` so it keeps returning its own redirect rather than the middleware's.
 
-`App.Locals` is **not** extended. The gate consumes `survey_completed_at` locally and discards it;
-`/survey` loads the full answer set itself in Phase 5 #1. The two paths need different column sets
-— one flag versus seven answers — so there is no double query to eliminate, and keeping the flag
-out of `App.Locals` removes any temptation to hoist the lookup above the path check.
+`App.Locals` is **not** extended. `/survey` loads the full answer set itself in Phase 5 #1 and
+`/dashboard` reads `survey_completed_at` itself for the button, so there is no shared lookup to
+hoist.
 
 #### 2. Smoke coverage
 
@@ -784,9 +788,11 @@ runs.
 **Contract**: New entries in the `steps` array (`:61`), each the established
 `[name, run, expected]` tuple with `{ status, location, cacheControl }` — see `:74-78`. Inserted
 after the successful sign-in at `:74-77` and before the sign-out at `:94-98`: a signed-in
-`/dashboard` request redirecting to `/survey`; a valid survey POST redirecting to `/dashboard`; a
-`/dashboard` request now passing through; and an invalid survey POST redirecting to `/survey`
-with an error. The existing anonymous-dashboard step at `:63` must keep passing unchanged.
+`/dashboard` request passing through with the survey unfinished (the soft gate — this replaces the
+original "redirects to `/survey`" step); an anonymous `/survey` request redirecting to
+`/auth/signin`; a valid survey POST redirecting to `/dashboard`; and an invalid survey POST
+redirecting to `/survey` with an error. The existing anonymous-dashboard step at `:63` must keep
+passing unchanged.
 
 **`request()` cannot send the survey as-is.** `request(path, { form })` serialises with
 `new URLSearchParams(form).toString()` on a plain object (`:40-49`), so
@@ -815,11 +821,13 @@ code.
 
 #### Manual Verification:
 
-- A newly signed-up person opening `/dashboard` lands on `/survey`
-- Completing the survey returns them to `/dashboard`, which now renders
+- ~~A newly signed-up person opening `/dashboard` lands on `/survey`~~ — struck: the soft gate
+  means `/dashboard` always renders. Replaced by: a person with no completed survey opening
+  `/dashboard` sees it render, showing the "fill in" button
+- Completing the survey returns them to `/dashboard`, which now shows the "edit" button
 - Revisiting `/survey` after completion shows the answers and does not redirect
-- No redirect loop on `/survey`, `/api/survey` or any auth route
-- An anonymous request to `/dashboard` still goes to `/auth/signin`, not `/survey`
+- An anonymous request to `/survey` goes to `/auth/signin`
+- An anonymous request to `/dashboard` still goes to `/auth/signin`
 - Signing out and back in preserves the answers
 
 **Implementation Note**: After completing this phase and all automated verification passes, pause
@@ -983,35 +991,37 @@ from here.
 
 #### Automated
 
-- [x] 5.1 Type checking passes: `npx astro check`
-- [x] 5.2 Linting passes, including the `jsx-a11y` rules already configured: `npm run lint`
-- [x] 5.3 Production build succeeds: `npm run build`
+- [x] 5.1 Type checking passes: `npx astro check` — 7fcfb0f
+- [x] 5.2 Linting passes, including the `jsx-a11y` rules already configured: `npm run lint` — 7fcfb0f
+- [x] 5.3 Production build succeeds: `npm run build` — 7fcfb0f
 
 #### Manual
 
-- [x] 5.4 The page shows five sections and nine questions, each with its "why" line
-- [x] 5.5 The progress indicator advances as required sections are completed and reaches 100% without the trainers section being answered
-- [x] 5.6 Submitting with four or six training days is blocked client-side with a specific message
-- [x] 5.7 `healthy_lifestyle` and `strength` are visible but not selectable
-- [x] 5.8 The hard-days question offers only the selected training days, requires exactly two, and drops a day that is deselected from `training_days`
-- [x] 5.9 Selecting "No preference" clears any chosen trainer, and choosing a trainer clears "No preference"
-- [x] 5.10 A completed survey, revisited at `/survey`, shows the person's current answers pre-filled
-- [x] 5.11 Changing an answer and resubmitting persists the change
-- [x] 5.12 The `?error=` message from a server-side rejection is displayed
+- [x] 5.4 The page shows five sections and nine questions, each with its "why" line — 7fcfb0f
+- [x] 5.5 The progress indicator advances as required sections are completed and reaches 100% without the trainers section being answered — 7fcfb0f
+- [x] 5.6 Submitting with four or six training days is blocked client-side with a specific message — 7fcfb0f
+- [x] 5.7 `healthy_lifestyle` and `strength` are visible but not selectable — 7fcfb0f
+- [x] 5.8 The hard-days question offers only the selected training days, requires exactly two, and drops a day that is deselected from `training_days` — 7fcfb0f
+- [x] 5.9 Selecting "No preference" clears any chosen trainer, and choosing a trainer clears "No preference" — 7fcfb0f
+- [x] 5.10 A completed survey, revisited at `/survey`, shows the person's current answers pre-filled — 7fcfb0f
+- [x] 5.11 Changing an answer and resubmitting persists the change — 7fcfb0f
+- [x] 5.12 The `?error=` message from a server-side rejection is displayed — 7fcfb0f
 
 ### Phase 6: Gating and end-to-end verification
 
 #### Automated
 
-- [ ] 6.1 Smoke test passes with the new steps: `BASE_URL=http://localhost:4321 npm run smoke` against `npm run preview`
-- [ ] 6.2 Isolation and constraint assertions still pass: `npm run rls-check`
-- [ ] 6.3 The full CI sequence passes: `npx astro sync && npm run lint && npx astro check && npm run build`
+- [x] 6.1 Smoke test passes with the new steps: `BASE_URL=http://localhost:4321 npm run smoke` against `npm run preview`
+- [x] 6.2 Isolation and constraint assertions still pass: `npm run rls-check`
+- [x] 6.3 The full CI sequence passes: `npx astro sync && npm run lint && npx astro check && npm run build`
 
 #### Manual
 
-- [ ] 6.4 A newly signed-up person opening `/dashboard` lands on `/survey`
-- [ ] 6.5 Completing the survey returns them to `/dashboard`, which now renders
-- [ ] 6.6 Revisiting `/survey` after completion shows the answers and does not redirect
-- [ ] 6.7 No redirect loop on `/survey`, `/api/survey` or any auth route
-- [ ] 6.8 An anonymous request to `/dashboard` still goes to `/auth/signin`, not `/survey`
-- [ ] 6.9 Signing out and back in preserves the answers
+- [ ] 6.4 A newly signed-up person opening `/dashboard` lands on `/survey` — VOID: soft gate, superseded by 6.10
+- [x] 6.5 Completing the survey returns them to `/dashboard`, which now renders
+- [x] 6.6 Revisiting `/survey` after completion shows the answers and does not redirect
+- [x] 6.7 No redirect loop on `/survey`, `/api/survey` or any auth route
+- [x] 6.8 An anonymous request to `/dashboard` still goes to `/auth/signin`, not `/survey`
+- [x] 6.9 Signing out and back in preserves the answers
+- [x] 6.10 A person with no completed survey opening `/dashboard` sees it render, showing the "fill in" button
+- [x] 6.11 An anonymous request to `/survey` goes to `/auth/signin`

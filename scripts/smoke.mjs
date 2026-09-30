@@ -39,7 +39,12 @@ function storeCookies(response) {
   }
 }
 
+// A plain object goes through URLSearchParams' record branch, which stringifies an array value
+// into one comma-joined field - so formData.getAll("training_days") would see a single element
+// and the five-distinct rule would reject it. Pass a URLSearchParams built from entry pairs to
+// repeat a key properly.
 async function request(path, { method = "GET", form } = {}) {
+  const body = form ? (form instanceof URLSearchParams ? form : new URLSearchParams(form)).toString() : undefined;
   const response = await fetch(BASE_URL + path, {
     method,
     redirect: "manual",
@@ -48,7 +53,7 @@ async function request(path, { method = "GET", form } = {}) {
       Origin: BASE_URL,
       ...(form ? { "Content-Type": "application/x-www-form-urlencoded" } : {}),
     },
-    body: form ? new URLSearchParams(form).toString() : undefined,
+    body,
   });
   storeCookies(response);
   return {
@@ -58,9 +63,36 @@ async function request(path, { method = "GET", form } = {}) {
   };
 }
 
+// Built as entry pairs, not an object literal: training_days and intense_days repeat their key.
+const validSurvey = () =>
+  new URLSearchParams([
+    ["goal", "weight_loss"],
+    ["activity_last_month", "1_2"],
+    ["cardio_experience", "occasional"],
+    ["strength_experience", "none"],
+    ["training_days", "mon"],
+    ["training_days", "tue"],
+    ["training_days", "wed"],
+    ["training_days", "thu"],
+    ["training_days", "fri"],
+    ["intense_days", "tue"],
+    ["intense_days", "thu"],
+    ["session_minutes", "30"],
+    ["impact_allowed", "true"],
+  ]);
+
+// Four training days - the exactly-five rule must reject this server-side.
+const invalidSurvey = () => {
+  const form = validSurvey();
+  form.delete("training_days");
+  for (const day of ["mon", "tue", "wed", "thu"]) form.append("training_days", day);
+  return form;
+};
+
 const steps = [
   ["home renders", () => request("/"), { status: 200 }],
   ["dashboard redirects anonymous user", () => request("/dashboard"), { status: 302, location: "/auth/signin" }],
+  ["survey redirects anonymous user", () => request("/survey"), { status: 302, location: "/auth/signin" }],
   [
     "signup creates account",
     () => request("/api/auth/signup", { method: "POST", form: { email, password } }),
@@ -76,7 +108,22 @@ const steps = [
     () => request("/api/auth/signin", { method: "POST", form: { email, password } }),
     { status: 302, location: "/dashboard", cacheControl: "no-store" },
   ],
-  ["dashboard renders for signed-in user", () => request("/dashboard"), { status: 200, cacheControl: "no-store" }],
+  [
+    "dashboard renders with the survey unfinished (soft gate)",
+    () => request("/dashboard"),
+    { status: 200, cacheControl: "no-store" },
+  ],
+  [
+    "survey rejects four training days",
+    () => request("/api/survey", { method: "POST", form: invalidSurvey() }),
+    { status: 302, location: "/survey?error=", cacheControl: "no-store" },
+  ],
+  [
+    "survey accepts a complete submission",
+    () => request("/api/survey", { method: "POST", form: validSurvey() }),
+    { status: 302, location: "/dashboard", cacheControl: "no-store" },
+  ],
+  ["dashboard still renders after completing the survey", () => request("/dashboard"), { status: 200 }],
   ...(REFRESH_WAIT_SECONDS > 0
     ? [
         [

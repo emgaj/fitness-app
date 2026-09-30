@@ -1,7 +1,10 @@
 import { defineMiddleware } from "astro:middleware";
 import { createClient } from "@/lib/supabase";
 
-const PROTECTED_ROUTES = ["/dashboard"];
+// /survey joins /dashboard here so the authentication gate below covers it. /api/survey is
+// deliberately absent: it runs its own authentication check and returns its own redirect, and
+// "/api/survey" does not start with "/survey" so the prefix match never reaches it.
+const PROTECTED_ROUTES = ["/dashboard", "/survey"];
 
 // Auth-cookie responses must never be stored by a CDN, a proxy or the browser: a cached
 // Set-Cookie can be replayed to a different user. @supabase/ssr offers the correct headers
