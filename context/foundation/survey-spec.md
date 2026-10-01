@@ -82,9 +82,11 @@ abandonment rate before the home screen on a 15-step setup. The mitigation the P
 not a shorter question list but a **later** one: collect what the first proposal needs, then
 collect the rest after the person has seen value.
 
-**Blocking — asked before `/dashboard` opens.** `goal`, `activity_last_month`,
+**Blocking — required before the app can build a week.** `goal`, `activity_last_month`,
 `cardio_experience`, `strength_experience`, `training_days`, `intense_days`,
-`session_minutes`, `impact_allowed`.
+`session_minutes`, `impact_allowed`. These are asked during setup, but nothing redirects off
+`/dashboard`: the dashboard always opens and prompts for an unfinished survey through a
+state-aware button (soft gate).
 
 **Setup, non-blocking.** `preferred_trainers` is asked during setup, is skippable to
 `no_preference`, and never gates `/dashboard`; it is a tie-breaker only.
@@ -140,6 +142,17 @@ Requirements:
    deferred-question flow depends on telling them apart.
 4. **A `survey_version` column.** F-02's template research may demand a field this spec does not
    yet have; versioning makes that an additive migration rather than a reshape.
+
+   **Constraint F-02 inherits:** `survey_version` and `survey_completed_at` are server-owned by
+   convention only. Protection on `profiles` is row-level, not column-level — the `UPDATE` grant
+   covers every column and the owner policy scopes only _which row_ — so a signed-in person can
+   `PATCH` both straight through PostgREST with the publishable key. The blast radius is their own
+   row (`profiles_survey_completed_requires_answers` still blocks marking an empty survey
+   complete), but **F-02 must treat `survey_version` as advisory, not trustworthy**. Before
+   branching on it, either move the two state columns behind a `SECURITY DEFINER` RPC with
+   `revoke execute` from the API roles, or add a `BEFORE UPDATE` trigger that rejects a
+   client-supplied change to them.
+
 5. **RLS per the F-01 pattern** — granular per-operation, per-role policies, explicit `anon`
    denial, grants spelled out with `revoke all` first, and an isolation assertion added to
    `scripts/rls-check.mjs`.

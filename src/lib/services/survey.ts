@@ -126,7 +126,9 @@ export async function saveSurveyAnswers(supabase: SupabaseClient<Database>, user
       survey_version: 1,
       survey_completed_at: new Date().toISOString(),
     })
-    .eq("id", userId);
+    .eq("id", userId)
+    .select("id")
+    .single();
 }
 
 function readEnumValue<Value extends string>(form: FormData, field: string, values: readonly Value[]): Value | null {

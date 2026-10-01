@@ -674,8 +674,12 @@ Five sections, each a `Card`, in this order:
 | Your space           | `impact_allowed`                                                  | yes      |
 | Your trainers        | `preferred_trainers`                                              | no       |
 
-Question text and answer labels come verbatim from `survey-spec.md` Tier 1 and Tier 2. Each
-question carries the spec-mandated one-line "why" beneath it. `goal` renders
+Question text and answer labels come verbatim from `survey-spec.md` Tier 1 and Tier 2. ~~Each
+question carries the spec-mandated one-line "why" beneath it.~~ **Reversed during implementation**:
+the per-question "why" lines were removed because they copied `survey-spec.md`'s internal
+Rationale column verbatim and leaked "PRD Non-Goals", "FR-003" and "The `T` in FITT" onto the page
+(`context/foundation/lessons.md`). Only mechanical counters remain in `QuestionShell`'s `note`
+slot. `goal` renders
 `healthy_lifestyle` and `strength` visibly disabled with a "soon" marker — the spec's reason for
 asking a question with one usable answer is that the field and the survey shape survive into v2
 unchanged.
@@ -726,7 +730,9 @@ than as setup.
 
 #### Manual Verification:
 
-- The page shows five sections and nine questions, each with its "why" line
+- The page shows five sections and nine questions, each with its "why" line — VOID: "why" lines
+  removed, leaked internal rationale (lessons.md); the criterion is now five sections and nine
+  questions
 - The progress indicator advances as required sections are completed and reaches 100% without the
   trainers section being answered
 - Submitting with four or six training days is blocked client-side with a specific message
@@ -852,13 +858,14 @@ selection becoming `{no_preference}`).
   invisible to `select` and unaffected by `update`; the constraints reject four and six training
   days, reject an `intense_days` outside `training_days`, reject `survey_completed_at` on an
   incomplete row, and reject `no_preference` combined with a real trainer.
-- `scripts/smoke.mjs` — signed-in `/dashboard` → `/survey` → valid POST → `/dashboard` renders,
-  plus an invalid POST redirecting with an error.
+- `scripts/smoke.mjs` — signed-in `/dashboard` renders with the survey unfinished (soft gate), then
+  `/survey` → valid POST → `/dashboard` renders, plus an invalid POST redirecting with an error.
 
 ### Manual Testing Steps:
 
 1. `npm run db:reset`, then `npm run dev`; sign up a fresh account.
-2. Open `/dashboard` — expect a redirect to `/survey`.
+2. Open `/dashboard` — expect it to render (soft gate, no redirect) with the state-aware button
+   prompting the unfinished survey; follow it to `/survey`.
 3. Submit with four training days selected — expect a blocking message naming the rule.
 4. Select six — expect the same. Select five, complete every required question, leave the
    trainers section untouched, and submit.
@@ -877,16 +884,18 @@ selection becoming `{no_preference}`).
 
 ## Performance Considerations
 
-The completion gate adds one primary-key lookup on `/dashboard` requests only, selecting a single
-column. Against the PRD's 2-second budget for getting a proposal on screen this is negligible.
-The lookup must not be hoisted above the path check — running it on every request, including
-static-asset-adjacent routes, would be a real regression.
+The soft gate adds no middleware lookup at all — nothing reads completion state on every request.
+`/dashboard` reads `survey_completed_at` itself to choose the button label: one primary-key lookup
+on that page only, selecting a single column. Against the PRD's 2-second budget for getting a
+proposal on screen this is negligible. Keep it that way — hoisting a completion lookup into
+middleware, where it would run on every request including static-asset-adjacent routes, would be a
+real regression.
 
 ## Migration Notes
 
 Existing `profiles` rows acquire null survey columns, so every current account reads as "survey
-not completed" and is redirected to `/survey` on its next `/dashboard` visit. That is the
-intended behaviour and no backfill is needed.
+not completed" and sees the prompting button on its next `/dashboard` visit — it is not redirected
+anywhere. That is the intended behaviour and no backfill is needed.
 
 Recovery is forward-only: a schema change cannot be undone with `wrangler rollback`, so a mistake
 here is corrected by a new migration. Apply to the hosted project with `npm run db:push` as a
@@ -900,6 +909,15 @@ doing so. A write that touches `training_days` alone will fail the whole update 
 previously stored `intense_days`, and the endpoint's error path surfaces the raw Supabase message
 to the person. The column comment records this so it is discoverable from the schema and not only
 from here.
+
+## Changes beyond the plan
+
+Recorded so later reviews do not re-flag these as drift.
+
+- **Sign-in success redirect moved `/` → `/dashboard`** (`src/pages/api/auth/signin.ts:18`). Not
+  named anywhere in this plan, but required for the survey slice to be reachable after sign-in.
+  `AGENTS.md` was amended to match ("success to the endpoint's own destination — `/dashboard` for
+  signin") and `scripts/smoke.mjs` asserts the new target.
 
 ## References
 
@@ -997,7 +1015,7 @@ from here.
 
 #### Manual
 
-- [x] 5.4 The page shows five sections and nine questions, each with its "why" line — 7fcfb0f
+- [x] 5.4 The page shows five sections and nine questions, each with its "why" line — VOID: "why" lines removed, leaked internal rationale (lessons.md) — 7fcfb0f
 - [x] 5.5 The progress indicator advances as required sections are completed and reaches 100% without the trainers section being answered — 7fcfb0f
 - [x] 5.6 Submitting with four or six training days is blocked client-side with a specific message — 7fcfb0f
 - [x] 5.7 `healthy_lifestyle` and `strength` are visible but not selectable — 7fcfb0f

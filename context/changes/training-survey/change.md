@@ -1,9 +1,9 @@
 ---
 change_id: training-survey
 title: Person states goal, cardio/strength experience, five training days and provisional trainer preferences
-status: implemented
+status: impl_reviewed
 created: 2026-09-28
-updated: 2026-09-30
+updated: 2026-10-01
 archived_at: null
 ---
 
