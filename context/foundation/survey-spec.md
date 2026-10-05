@@ -4,7 +4,7 @@ doc: survey-spec
 version: 1
 status: ready
 created: 2026-09-30
-updated: 2026-09-30
+updated: 2026-10-04
 prd_version: 1
 roadmap_refs: [S-01, F-02, F-03, S-02, S-04, S-06]
 ---
@@ -35,18 +35,18 @@ S-01 implementation plan, which reads this file as its input.
 A field is only in this spec because something reads it. Editing a row means checking this table
 first.
 
-| Field group                                | Read by          | What it decides there                                                |
-| ------------------------------------------ | ---------------- | -------------------------------------------------------------------- |
-| `goal`                                     | F-02, S-02       | Selects the weekly template                                          |
-| `activity_last_month`                      | F-02, S-02, S-04 | Starting intensity and how fast progression is allowed               |
-| `cardio_experience`, `strength_experience` | F-02, S-02, S-04 | Per-type intensity ceiling — the two are not interchangeable         |
-| `training_days`                            | F-02, S-02, S-06 | Which days the template lays sessions on                             |
-| `preferred_trainers`                       | S-02             | Tie-breaker only, never a constraint (PRD `FR-004`)                  |
-| `session_minutes`                          | F-02, F-03, S-02 | Catalogue filter; a video longer than this is not proposable         |
-| `impact_allowed`                           | F-03, S-02       | Removes high-impact cardio from the proposable set                   |
-| `intense_days`                             | F-02, S-06       | Where the template anchors the hardest session, and recovery spacing |
-| `equipment`                                | F-03, S-02       | Deferred outside v1; later decides whether loaded strength is viable |
-| `age_band`                                 | F-02             | Rep-range and intensity adjustments for older adults                 |
+| Field group                                | Read by          | What it decides there                                                                       |
+| ------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------- |
+| `goal`                                     | F-02, S-02       | Selects the weekly template                                                                 |
+| `activity_last_month`                      | F-02, S-02, S-04 | Starting intensity and how fast progression is allowed                                      |
+| `cardio_experience`, `strength_experience` | F-02, S-02, S-04 | Per-type intensity ceiling — the two are not interchangeable                                |
+| `training_days`                            | F-02, S-02, S-06 | Which days the template lays sessions on                                                    |
+| `preferred_trainers`                       | S-02             | Tie-breaker only, never a constraint (PRD `FR-004`)                                         |
+| `session_minutes`                          | F-02, F-03, S-02 | Catalogue filter; a video longer than this is not proposable                                |
+| `impact_allowed`                           | F-03, S-02       | Removes high-impact cardio from the proposable set                                          |
+| `intense_days`                             | F-02, S-06       | Where the template anchors the hardest session, and recovery spacing                        |
+| `equipment`                                | F-03, S-02       | Deferred outside v1; later decides whether loaded strength is viable                        |
+| `age_band`                                 | none in v1       | Rep-range and intensity adjustments for older adults (deferred; F-02 reads nothing from it) |
 
 ## Tier 1 — the PRD four, corrected
 
@@ -177,9 +177,10 @@ The S-01 plan resolved the gaps between the original PRD wording and the survey 
 
 ## Open questions
 
-1. **Does F-02's template need an input this spec lacks?** The five-day weight-loss template and
-   the counterbalancing map are still unwritten (PRD Open Questions 1 and 2). If they require
-   something new, it lands here first. Owner: user. Block: no.
+1. **Answered: F-02 needs no new survey input in v1.** The coaching week spec
+   (`context/foundation/coaching-week-spec.md`) adds no field. `age_band` stays deferred, and an
+   unknown value falls back to the standard rules. The pre-participation safety screen is declined
+   as an accepted risk, recorded in the coaching spec. Block: no.
 2. **Does the catalogue support the `equipment` and `impact_allowed` filters?** ~20 videos split
    by type × intensity is already thin; adding two more filters may leave days unfillable. F-03's
    coverage check should test against this field list. Owner: user, via F-03. Block: no.

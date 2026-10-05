@@ -57,6 +57,7 @@ npm run dev
 - `npm run format` - Run Prettier
 - `npm run smoke` - Smoke test the auth flow against a running server (`BASE_URL`, defaults to `http://localhost:4321`)
 - `npm run rls-check` - Verify local profile RLS isolation with the publishable key
+- `npm run week-check` - Check the coaching-week fixtures against the spec's invariants (no server or Supabase needed)
 - `npm run db:reset` - Reset the local Supabase database and apply migrations
 - `npm run db:types` - Regenerate Supabase TypeScript types into `src/db/database.types.ts`
 - `npm run db:push` - Apply migrations to the linked hosted Supabase project
@@ -288,7 +289,7 @@ It needs a reachable Supabase instance (local or cloud) with email confirmation 
 
 GitHub Actions runs two jobs on every push and PR to `main`. **Neither deploys** — production is deployed by Cloudflare Workers Builds (see [Deployment](#deployment)), so the two pipelines never race.
 
-- **ci** — lint, `astro check` and build. No repository secrets required: `SUPABASE_URL` and `SUPABASE_KEY` are `optional: true` in `astro.config.mjs`, so the build succeeds without them.
+- **ci** — lint, `astro check`, `week-check` and build. No repository secrets required: `SUPABASE_URL` and `SUPABASE_KEY` are `optional: true` in `astro.config.mjs`, so the build succeeds without them.
 - **smoke** — starts a local Supabase via the Supabase CLI, builds, serves the production preview on the Cloudflare runtime and runs `npm run smoke` against it. No secrets required.
 
 ## License

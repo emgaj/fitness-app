@@ -19,6 +19,7 @@ jobs:
       - run: npx astro sync
       - run: npm run lint
       - run: npx astro check
+      - run: npm run week-check
       # No Supabase credentials: both env vars are `optional: true` in
       # astro.config.mjs, so the build succeeds without them. Cloudflare
       # Workers Builds deploys the same way, with build variables empty.

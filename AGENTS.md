@@ -17,6 +17,7 @@ Astro 7 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 - `npx astro check` — type-check; CI runs `npx astro sync` first. Neither is a `package.json` script.
 - `BASE_URL=http://localhost:4321 npm run smoke` — auth-flow smoke test against a running server
 - `npm run rls-check` — dependency-free local RLS isolation check for `public.profiles`
+- `npm run week-check` — dependency-free coaching-week fixture invariant check
 - `npm run db:reset` — reset the local Supabase database and apply migrations
 - `npm run db:types` — regenerate `@src/db/database.types.ts`; never edit it by hand
 - `npm run db:push` — apply migrations to the linked hosted Supabase project as a human-approved step
@@ -24,7 +25,7 @@ Astro 7 SSR app (React 19 islands, Tailwind 4, shadcn/ui, Supabase auth) deploye
 
 ## Testing
 
-There is no unit-test framework yet. `@scripts/smoke.mjs` is a dependency-free HTTP walkthrough of the auth flow; it needs a reachable Supabase with email confirmation disabled. `@scripts/rls-check.mjs` is the second dependency-free check; it uses the publishable key against local Supabase to prove profile creation and per-person RLS isolation. To run one smoke scenario, comment out entries in its `steps` array — there is no per-test selector. Add a real test runner before building product features.
+There is no unit-test framework yet. `@scripts/smoke.mjs` is a dependency-free HTTP walkthrough of the auth flow; it needs a reachable Supabase with email confirmation disabled. `@scripts/rls-check.mjs` is the second dependency-free check; it uses the publishable key against local Supabase to prove profile creation and per-person RLS isolation. `@scripts/week-check.mjs` is the third dependency-free check; it validates `@context/foundation/coaching-week-fixtures.json` against the invariants in `@context/foundation/coaching-week-spec.md` and needs no server or Supabase. To run one smoke scenario, comment out entries in its `steps` array — there is no per-test selector. Add a real test runner before building product features.
 
 ## Auth conventions
 
@@ -69,4 +70,4 @@ Environment setup, local Supabase and deployment: `@README.md`. The one trap it 
 
 **Pushing to `main` deploys to production.** Cloudflare Workers Builds clones, runs `npx astro sync && npm run lint && npx astro check && npm run build`, then `npx wrangler deploy`. A lint or type error fails the build and nothing ships. `astro sync` **must** run first — `.astro/` is gitignored, so without it the type-aware lint rules produce 26 errors in a fresh clone. GitHub Actions does **not** deploy; keep it that way so the two pipelines never race.
 
-`@.github/workflows/ci.yml` gates `main` with two jobs: `ci` (lint, `astro check`, build) and `smoke` (local Supabase + production preview). Neither needs repository secrets — both env vars are `optional: true` in `@astro.config.mjs`, so the build succeeds without them. Husky + lint-staged auto-fixes `*.{ts,tsx,astro}` with ESLint and `*.{json,css,md}` with Prettier on commit.
+`@.github/workflows/ci.yml` gates `main` with two jobs: `ci` (lint, `astro check`, `week-check`, build) and `smoke` (local Supabase + production preview). Neither needs repository secrets — both env vars are `optional: true` in `@astro.config.mjs`, so the build succeeds without them. Husky + lint-staged auto-fixes `*.{ts,tsx,astro}` with ESLint and `*.{json,css,md}` with Prettier on commit.

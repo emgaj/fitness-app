@@ -42,7 +42,7 @@ A person who trains at home starts every session with an unstructured decision �
 | ID   | Change ID                 | Outcome (user can …)                                                                                 | Prerequisites    | PRD refs                                     | Status      |
 | ---- | ------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- | ----------- |
 | F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else                                | —                | FR-002, §Access Control                      | done        |
-| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | ready       |
+| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | in-progress |
 | F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready       |
 | S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | done        |
 | S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked     |
@@ -95,13 +95,13 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Outcome:** (foundation) the five-day weight-loss template (how many cardio days, how many strength days, how intensity is sequenced, what recovery spacing is required) and the counterbalancing map (what a run of one type is answered with, and which of the three off-plan paths the week's balance argues for) exist as an explicit, checkable specification.
 - **Change ID:** `coaching-week-spec`
 - **PRD refs:** §Business Logic, §Open Questions 1, 2
-- **Unlocks:** resolves the two blocking unknowns that currently hold `S-02`, `S-04` and `S-06` in `blocked`. Also defines the expected-output table those three slices are verified against — without it there is nothing to check a proposal's correctness by.
+- **Unlocks:** resolves the two blocking unknowns that currently hold `S-02`, `S-04` and `S-06` in `blocked`. Also defines the expected-output table those three slices are verified against — without it there is nothing to check a proposal's correctness by. The spec is `context/foundation/coaching-week-spec.md`; the fixtures those slices verify against are `context/foundation/coaching-week-fixtures.json`.
 - **Prerequisites:** —
 - **Parallel with:** F-01, F-03
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is research, not code, and it is the single highest-fan-out item in the milestone — it is the only reason three slices are blocked. Because the main risk is `time`, it should be started in parallel with `F-01` on day one rather than picked up when `S-02` stalls against it. The scope cap that keeps it honest: it specifies one week shape for one goal (PRD non-goal: no other goals in v1, and FR-012's three- and four-day weeks are parked), so it cannot expand into general programming methodology.
-- **Status:** ready
+- **Status:** in-progress
 
 ### F-03: A curated, tagged catalogue exists
 

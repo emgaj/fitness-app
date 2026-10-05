@@ -1,0 +1,1149 @@
+{
+  "spec_version": 1,
+  "rules": [
+    "T1",
+    "T2",
+    "T3",
+    "T4",
+    "T5",
+    "T6",
+    "T7",
+    "G1",
+    "G2",
+    "G4",
+    "G5",
+    "G6",
+    "H1",
+    "H2",
+    "H3",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "U1",
+    "U2",
+    "U3",
+    "U4",
+    "U5",
+    "U6",
+    "U7"
+  ],
+  "cases": [
+    {
+      "id": "WE-1",
+      "covers": ["D2", "D4", "D9", "G1", "G4", "P9", "T1", "T2", "T3", "T4", "T5", "T7"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "WE-2",
+      "covers": ["D2", "D3", "D4", "H1", "H2", "T2", "T3", "T7"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["sat", "sun", "mon", "tue", "wed"],
+          "intense_days": ["sun", "mon"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "C-I" },
+        "tue": { "kind": "session", "slot": "C-M" },
+        "wed": { "kind": "session", "slot": "S-M" },
+        "thu": null,
+        "fri": null,
+        "sat": { "kind": "session", "slot": "C-M" },
+        "sun": { "kind": "session", "slot": "S-I" }
+      }
+    },
+    {
+      "id": "WE-3",
+      "covers": ["D1", "D4", "D9", "P2", "P3", "P4", "P5"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-06",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": {
+        "mon": null,
+        "tue": null,
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "WE-4",
+      "covers": ["D4", "D6", "P8", "U1", "U3", "U4", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "thu", "fri", "sat"],
+          "intense_days": ["tue", "sat"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [{ "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "planned" }],
+        "plan": {
+          "mon": { "kind": "session", "slot": "C-M" },
+          "tue": { "kind": "session", "slot": "S-I" },
+          "wed": null,
+          "thu": { "kind": "session", "slot": "C-M" },
+          "fri": { "kind": "session", "slot": "S-M" },
+          "sat": { "kind": "session", "slot": "C-I" },
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "move", "move_from": "2026-10-09" }
+    },
+    {
+      "id": "TPL-NONADJACENT-INTENSE",
+      "covers": ["T2", "T3", "T6", "T7"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "wed"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-M" },
+        "wed": { "kind": "session", "slot": "C-I" },
+        "thu": { "kind": "session", "slot": "C-M" },
+        "fri": { "kind": "session", "slot": "S-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-GATE-WEEK-2-NO-I",
+      "covers": ["G1", "G4", "G5", "H3"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "3_4",
+          "cardio_experience": "occasional",
+          "strength_experience": "occasional",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 2,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-M" },
+        "tue": { "kind": "session", "slot": "C-M" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-GATE-WEEK-3-SINGLE-I",
+      "covers": ["D5", "G1", "G4", "G5", "H3"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "1_2",
+          "cardio_experience": "occasional",
+          "strength_experience": "occasional",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 3,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-M" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-STRENGTH-NONE-RUNNER",
+      "covers": ["G1", "G2", "G5"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "none",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 3,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-M" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-CARDIO-NONE-S-I-KEEPS",
+      "covers": ["D5", "G1", "G2", "G4", "G5"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "1_2",
+          "cardio_experience": "none",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 3,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-M" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-NONE-CAP-EXPIRED",
+      "covers": ["G2"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "none",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-REGULAR-UNDER-6M-WEEK-1",
+      "covers": ["G1"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "3_4",
+          "cardio_experience": "occasional",
+          "strength_experience": "regular_under_6m",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 1,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-INACTIVE-WEEK-5-NO-SCREEN",
+      "covers": ["D8", "G1", "G4"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "0",
+          "cardio_experience": "none",
+          "strength_experience": "none",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "TPL-SESSION-MINUTES-20",
+      "covers": ["G6"],
+      "kind": "template",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"],
+          "session_minutes": "20"
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": []
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "D7-EMPTY-WEEK-DOES-NOT-ADVANCE",
+      "covers": ["D7", "G1", "P7"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "1_2",
+          "cardio_experience": "occasional",
+          "strength_experience": "occasional",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 4,
+        "today": "2026-10-05",
+        "history_complete": true,
+        "history": [
+          { "date": "2026-09-09", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-09-16", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-09-30", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-M" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "D3-SUNDAY-S-I-BLOCKS-MONDAY-STRENGTH",
+      "covers": ["D3", "H1", "H2", "M3", "M6", "M10", "P7"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["sun", "mon", "tue", "wed", "thu"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": [{ "date": "2026-10-04", "type": "S", "intensity": "I", "origin": "planned" }]
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "C-I" },
+        "tue": { "kind": "session", "slot": "C-M" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": null,
+        "sat": null,
+        "sun": { "kind": "session", "slot": "S-M" }
+      }
+    },
+    {
+      "id": "P1-FOLLOWED-PLAN-NO-RECOMPUTE",
+      "covers": ["D1", "D9", "P1"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-08", "type": "S", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "P8-MISSED-PLANNED-DAY-NO-RECOMPUTE",
+      "covers": ["D1", "P8"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-08", "type": "S", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": {
+        "mon": { "kind": "session", "slot": "S-I" },
+        "tue": { "kind": "session", "slot": "C-I" },
+        "wed": { "kind": "session", "slot": "C-M" },
+        "thu": { "kind": "session", "slot": "S-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "P3-LATEST-DEVIATION-ANCHORS",
+      "covers": ["D1", "H1", "M3", "P2", "P3", "P4", "P5"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-07", "type": "S", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": {
+        "mon": null,
+        "tue": null,
+        "wed": null,
+        "thu": { "kind": "session", "slot": "C-M" },
+        "fri": { "kind": "session", "slot": "C-M" },
+        "sat": null,
+        "sun": null
+      }
+    },
+    {
+      "id": "P6-MOVE-RELEASES-SOURCE-DAY",
+      "covers": ["D1", "M6", "P2", "P5", "P6"],
+      "kind": "recompute",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "thu", "fri", "sat"],
+          "intense_days": ["tue", "sat"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-07", "type": "S", "intensity": "M", "origin": "moved", "moved_from": "2026-10-09" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "C-M" },
+          "tue": { "kind": "session", "slot": "S-I" },
+          "wed": null,
+          "thu": { "kind": "session", "slot": "C-M" },
+          "fri": { "kind": "session", "slot": "S-M" },
+          "sat": { "kind": "session", "slot": "C-I" },
+          "sun": null
+        }
+      },
+      "expected": {
+        "mon": null,
+        "tue": null,
+        "wed": null,
+        "thu": { "kind": "session", "slot": "C-M" },
+        "fri": null,
+        "sat": { "kind": "session", "slot": "S-I" },
+        "sun": null
+      }
+    },
+    {
+      "id": "M1-OFF-PLAN-RUN-WITH-I-RESTS",
+      "covers": ["D9", "M1"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-06",
+        "history": [
+          { "date": "2026-10-03", "type": "C", "intensity": "M", "origin": "one_off" },
+          { "date": "2026-10-04", "type": "C", "intensity": "L", "origin": "one_off" },
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "rest", "reason": "off_plan_run_intense", "offer": "C-L" }
+    },
+    {
+      "id": "M2-LONG-OFF-PLAN-RUN-RESTS",
+      "covers": ["D9", "M2"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "0",
+          "cardio_experience": "none",
+          "strength_experience": "none",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 2,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-03", "type": "C", "intensity": "L", "origin": "one_off" },
+          { "date": "2026-10-04", "type": "C", "intensity": "L", "origin": "one_off" },
+          { "date": "2026-10-05", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "rest", "reason": "off_plan_run_long", "offer": "C-L" }
+    },
+    {
+      "id": "M3-YESTERDAY-STRENGTH-FORCES-CARDIO",
+      "covers": ["H1", "M3"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "S", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "C-M" }
+    },
+    {
+      "id": "M4-THIRD-STRENGTH-BECOMES-CARDIO",
+      "covers": ["D1", "M4"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "C-M" }
+    },
+    {
+      "id": "M5-OFF-PLAN-CARDIO-STREAK-TURNS-STRENGTH",
+      "covers": ["D9", "M5"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-06",
+        "history": [
+          { "date": "2026-10-03", "type": "C", "intensity": "M", "origin": "one_off" },
+          { "date": "2026-10-04", "type": "C", "intensity": "M", "origin": "one_off" },
+          { "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "own" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "S-I" }
+    },
+    {
+      "id": "M6-STRENGTH-FLOOR-CONVERTS-CARDIO",
+      "covers": ["D1", "M6"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-09",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-08", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "S-M" }
+    },
+    {
+      "id": "M7-YESTERDAY-C-I-LIGHTENS-STRENGTH",
+      "covers": ["M7"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "I", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "S-L" }
+    },
+    {
+      "id": "M8-STRENGTH-PAIR-CAPS-AT-M",
+      "covers": ["M8"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["wed", "fri"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-06", "type": "S", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "C-M" }
+    },
+    {
+      "id": "M9-OFF-PLAN-INTENSE-PAIR-LIGHTENS",
+      "covers": ["D9", "M3", "M9"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-05",
+        "history": [
+          { "date": "2026-10-03", "type": "C", "intensity": "L", "origin": "one_off" },
+          { "date": "2026-10-04", "type": "S", "intensity": "I", "origin": "own" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "C-L" }
+    },
+    {
+      "id": "M10-BUDGET-EXHAUSTED-CAPS-AT-M",
+      "covers": ["D1", "G4", "H3", "M10"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "1_2",
+          "cardio_experience": "occasional",
+          "strength_experience": "occasional",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 3,
+        "today": "2026-10-06",
+        "history": [{ "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" }]
+      },
+      "expected": { "kind": "session", "slot": "C-M" }
+    },
+    {
+      "id": "M10-SAME-TYPE-I-YESTERDAY",
+      "covers": ["D1", "H2", "M10"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-06",
+        "history": [{ "date": "2026-10-05", "type": "C", "intensity": "I", "origin": "planned" }]
+      },
+      "expected": { "kind": "session", "slot": "C-M" }
+    },
+    {
+      "id": "M11-SINGLE-I-LEFT-GOES-TO-C-I",
+      "covers": ["D5", "H3", "M11"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["wed", "thu"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "S-M" }
+    },
+    {
+      "id": "M12-YESTERDAY-C-M-NO-ACTION",
+      "covers": ["M12", "P1"],
+      "kind": "planned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-08",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" }
+        ]
+      },
+      "expected": { "kind": "session", "slot": "S-M" }
+    },
+    {
+      "id": "U2-REST-AFTER-INTENSE",
+      "covers": ["U1", "U2", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "thu", "fri", "sat"],
+          "intense_days": ["tue", "sat"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-06", "type": "S", "intensity": "I", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "C-M" },
+          "tue": { "kind": "session", "slot": "S-I" },
+          "wed": null,
+          "thu": { "kind": "session", "slot": "C-M" },
+          "fri": { "kind": "session", "slot": "S-M" },
+          "sat": { "kind": "session", "slot": "C-I" },
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "rest", "reason": "after_intense" }
+    },
+    {
+      "id": "U2-REST-AFTER-LONG-RUN",
+      "covers": ["U2", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-10",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-08", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-09", "type": "C", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "rest", "reason": "run_before_today" }
+    },
+    {
+      "id": "U2-REST-GATE-WEEK-RECOVERY",
+      "covers": ["G1", "U2", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "0",
+          "cardio_experience": "none",
+          "strength_experience": "none",
+          "training_days": ["mon", "tue", "thu", "fri", "sat"],
+          "intense_days": ["tue", "sat"]
+        },
+        "progression_week": 1,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-06", "type": "S", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "C-M" },
+          "tue": { "kind": "session", "slot": "S-M" },
+          "wed": null,
+          "thu": { "kind": "session", "slot": "C-M" },
+          "fri": { "kind": "session", "slot": "S-M" },
+          "sat": { "kind": "session", "slot": "C-M" },
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "rest", "reason": "gate_week_recovery" }
+    },
+    {
+      "id": "U3-ILLEGAL-STRENGTH-FALLS-BACK-TO-NEAREST",
+      "covers": ["D1", "D6", "H1", "U3", "U4"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "thu", "fri", "sat"],
+          "intense_days": ["tue", "sat"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-07",
+        "history": [
+          { "date": "2026-10-05", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-06", "type": "S", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "C-M" },
+          "tue": { "kind": "session", "slot": "S-I" },
+          "wed": null,
+          "thu": { "kind": "session", "slot": "C-M" },
+          "fri": { "kind": "session", "slot": "S-M" },
+          "sat": { "kind": "session", "slot": "C-I" },
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "move", "move_from": "2026-10-08" }
+    },
+    {
+      "id": "U5-ONE-OFF-NOTHING-LEFT-TO-MOVE",
+      "covers": ["U1", "U5", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-10",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "one_off", "one_off_slot": "C-M" }
+    },
+    {
+      "id": "U5-ONE-OFF-LIGHT-AFTER-SESSION-YESTERDAY",
+      "covers": ["U5", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-10",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-09", "type": "C", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "one_off", "one_off_slot": "C-L" }
+    },
+    {
+      "id": "U6-WEEKLY-CAP-REST",
+      "covers": ["U1", "U6", "U7"],
+      "kind": "unplanned_day",
+      "input": {
+        "answers": {
+          "goal": "weight_loss",
+          "activity_last_month": "5_plus",
+          "cardio_experience": "regular_6m_plus",
+          "strength_experience": "regular_6m_plus",
+          "training_days": ["mon", "tue", "wed", "thu", "fri"],
+          "intense_days": ["mon", "tue"]
+        },
+        "progression_week": 5,
+        "today": "2026-10-11",
+        "history": [
+          { "date": "2026-10-05", "type": "S", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-06", "type": "C", "intensity": "I", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-07", "type": "C", "intensity": "L", "origin": "own" },
+          { "date": "2026-10-08", "type": "S", "intensity": "M", "origin": "planned" },
+          { "date": "2026-10-09", "type": "C", "intensity": "M", "origin": "planned" }
+        ],
+        "plan": {
+          "mon": { "kind": "session", "slot": "S-I" },
+          "tue": { "kind": "session", "slot": "C-I" },
+          "wed": { "kind": "session", "slot": "C-M" },
+          "thu": { "kind": "session", "slot": "S-M" },
+          "fri": { "kind": "session", "slot": "C-M" },
+          "sat": null,
+          "sun": null
+        }
+      },
+      "expected": { "highlight": "rest", "reason": "weekly_cap" }
+    }
+  ]
+}

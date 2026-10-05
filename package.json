@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "smoke": "node scripts/smoke.mjs",
     "rls-check": "node --env-file=.env scripts/rls-check.mjs",
+    "week-check": "node scripts/week-check.mjs",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local > src/db/database.types.ts && prettier --write src/db/database.types.ts",
     "db:push": "supabase db push",
