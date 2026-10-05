@@ -45,11 +45,11 @@ A person who trains at home starts every session with an unstructured decision �
 | F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | done     |
 | F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready    |
 | S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | done     |
-| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked  |
+| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | proposed |
 | S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened                                    | S-02             | US-02, FR-008, FR-011                        | proposed |
-| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | blocked  |
+| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | proposed |
 | S-05 | `custom-workout-log`      | add their own workout from outside the catalogue and have it count                                   | S-04             | US-02, FR-009, FR-010                        | proposed |
-| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train                                         | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | blocked  |
+| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train                                         | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | proposed |
 
 ## Streams
 
@@ -140,9 +140,9 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** —
 - **Blockers:** —
 - **Unknowns:**
-  - What does the five-day weight-loss template actually look like — how many cardio days, how many strength days, how intensity is sequenced, what recovery spacing is required? — Owner: user, via `F-02`. Block: yes.
+  - What does the five-day weight-loss template actually look like — how many cardio days, how many strength days, how intensity is sequenced, what recovery spacing is required? — Owner: user, via `F-02`. Answered: `context/foundation/coaching-week-spec.md`. Block: no.
 - **Risk:** This is the north star, so it is placed as early as its Prerequisites allow — but it genuinely cannot be planned in detail until `F-02` says what kind of day each day is. Marking it `blocked` rather than guessing the template is the point: a proposal produced by an invented rule would look finished and prove nothing. Two guardrails belong here and are easy to lose — the same video is never proposed two days running, and the plan survives a reload unchanged. The §NFRs reference covers both non-functional requirements: the proposal is on screen within 2 seconds, and the person never sees a day without an answer.
-- **Status:** blocked
+- **Status:** proposed
 
 ### S-03: A person says whether the last session happened
 
@@ -165,9 +165,9 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** —
 - **Blockers:** —
 - **Unknowns:**
-  - What is the counterbalancing map, concretely — what counts as a run of one type, and what should each pattern be answered with? — Owner: user, via `F-02`. Block: yes.
+  - What is the counterbalancing map, concretely — what counts as a run of one type, and what should each pattern be answered with? — Owner: user, via `F-02`. Answered: `context/foundation/coaching-week-spec.md`. Block: no.
 - **Risk:** The PRD's own test of whether the product works ("a plan that never changes in response to what actually happened has not proven the product"), so getting it wrong is not a cosmetic failure. Two properties are easy to violate and worth stating up front: the change follows from the running balance across the week, not only from yesterday's session; and replanning runs forward only.
-- **Status:** blocked
+- **Status:** proposed
 
 ### S-05: A person logs a workout the app did not propose
 
@@ -190,28 +190,28 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** S-05
 - **Blockers:** —
 - **Unknowns:**
-  - Which of the three off-plan paths should the week's balance argue for — move, one-off, or rest? — Owner: user, via `F-02`. Block: yes.
+  - Which of the three off-plan paths should the week's balance argue for — move, one-off, or rest? — Owner: user, via `F-02`. Answered: `context/foundation/coaching-week-spec.md`. Block: no.
 - **Risk:** The largest remaining slice and the last of the must-have set, so it is the first place the deadline will bite; see Open Roadmap Question 5 for the trim decision. It is kept whole rather than split because the three paths are one decision on one surface — shipping the highlight without the actions would hand the person a recommendation they cannot take, which is the dead end the §NFRs rule out ("a person never sees a day without an answer"). If detailed planning shows it is still too broad, `/10x-plan` can spawn more than one change from this item. Two consequences are easy to drop: a moved session releases the day it came from (the week stays at five), and a one-off does not (the week becomes six), and the app declines to highlight the one-off when the balance argues against it but never blocks it.
-- **Status:** blocked
+- **Status:** proposed
 
 ## Backlog Handoff
 
-| Roadmap ID | Change ID                 | Suggested issue title                                           | Ready for `/10x-plan` | Notes                                           |
-| ---------- | ------------------------- | --------------------------------------------------------------- | --------------------- | ----------------------------------------------- |
-| F-01       | `per-person-data-safety`  | Establish per-person data access contract                       | yes                   | Run `/10x-plan per-person-data-safety`          |
-| F-02       | `coaching-week-spec`      | Specify the five-day template and counterbalancing map          | yes                   | Highest fan-out; unblocks S-02, S-04, S-06      |
-| F-03       | `curated-video-catalogue` | Curate and tag the ~20-video catalogue                          | yes                   | Parallel with F-01 and F-02                     |
-| S-01       | `training-survey`         | Person completes the training survey                            | yes                   | F-01 done; run `/10x-plan training-survey`      |
-| S-02       | `todays-pick`             | Person sees today's pick among three proposals                  | no                    | Blocked: template undefined (Open Question 1)   |
-| S-03       | `session-confirmation`    | Person confirms whether the previous session happened           | no                    | Waiting on S-02                                 |
-| S-04       | `week-reshaping`          | Remaining days reshape after a session is recorded              | no                    | Blocked: counterbalancing map undefined (Q2)    |
-| S-05       | `custom-workout-log`      | Person logs a workout from outside the catalogue                | no                    | Waiting on S-04                                 |
-| S-06       | `unplanned-day-paths`     | Unplanned day offers move / one-off / rest with one highlighted | no                    | Blocked: which path the balance argues for (Q2) |
+| Roadmap ID | Change ID                 | Suggested issue title                                           | Ready for `/10x-plan` | Notes                                       |
+| ---------- | ------------------------- | --------------------------------------------------------------- | --------------------- | ------------------------------------------- |
+| F-01       | `per-person-data-safety`  | Establish per-person data access contract                       | yes                   | Run `/10x-plan per-person-data-safety`      |
+| F-02       | `coaching-week-spec`      | Specify the five-day template and counterbalancing map          | yes                   | Done; unblocked S-02, S-04, S-06            |
+| F-03       | `curated-video-catalogue` | Curate and tag the ~20-video catalogue                          | yes                   | Parallel with F-01 and F-02                 |
+| S-01       | `training-survey`         | Person completes the training survey                            | yes                   | F-01 done; run `/10x-plan training-survey`  |
+| S-02       | `todays-pick`             | Person sees today's pick among three proposals                  | no                    | Waiting on F-03 (template answered by F-02) |
+| S-03       | `session-confirmation`    | Person confirms whether the previous session happened           | no                    | Waiting on S-02                             |
+| S-04       | `week-reshaping`          | Remaining days reshape after a session is recorded              | no                    | Waiting on S-03 (map answered by F-02)      |
+| S-05       | `custom-workout-log`      | Person logs a workout from outside the catalogue                | no                    | Waiting on S-04                             |
+| S-06       | `unplanned-day-paths`     | Unplanned day offers move / one-off / rest with one highlighted | no                    | Waiting on S-04 (paths answered by F-02)    |
 
 ## Open Roadmap Questions
 
-1. **What does the five-day weight-loss template actually look like?** — how many cardio days, how many strength days, how intensity is sequenced across the week, and what recovery spacing the methodology requires. Owner: user, through AI-assisted research into training methodology. Block: `S-02`. Delivered by `F-02`.
-2. **What is the counterbalancing map, concretely?** — what counts as a run of one type, what each pattern should be answered with, and which of the three unplanned-day paths the week's balance argues for. Bounded by the v1 tag vocabulary to two types and three intensities, so the map stays small. Owner: user; same research as question 1, but a separate output from it. Block: `S-04`, `S-06`. Delivered by `F-02`.
+1. **What does the five-day weight-loss template actually look like?** — how many cardio days, how many strength days, how intensity is sequenced across the week, and what recovery spacing the methodology requires. Owner: user, through AI-assisted research into training methodology. Block: `S-02`. Delivered by `F-02`. **Answered 2026-10-04:** `context/foundation/coaching-week-spec.md`; no longer blocks.
+2. **What is the counterbalancing map, concretely?** — what counts as a run of one type, what each pattern should be answered with, and which of the three unplanned-day paths the week's balance argues for. Bounded by the v1 tag vocabulary to two types and three intensities, so the map stays small. Owner: user; same research as question 1, but a separate output from it. Block: `S-04`, `S-06`. Delivered by `F-02`. **Answered 2026-10-04:** `context/foundation/coaching-week-spec.md`; no longer blocks.
 3. **What is the expected request rate?** — not captured during shaping. Owner: user. Block: no (the small-user-base assumption holds until contradicted).
 4. **What is the expected data volume?** — not captured during shaping. Owner: user. Block: no (a hand-curated ~20-video catalogue plus per-person weekly records implies a small volume, but this was never stated).
 5. **If the deadline bites, is `S-06` trimmable to the rest path alone?** — surfaced while sequencing, not from the PRD. With a hard deadline of 2026-11-04 against a three-week budget, `S-06` is the last must-have item and the one most exposed. A reduced version (the day is visibly distinct and rest is offered with its reason) would still satisfy "no day is ever a dead end", at the cost of FR-014 and FR-015. Owner: user. Block: no — decide only if the calendar forces it.
