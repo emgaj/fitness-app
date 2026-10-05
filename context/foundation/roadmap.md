@@ -3,7 +3,7 @@ project: HomeFit
 version: 1
 status: draft
 created: 2026-09-27
-updated: 2026-10-04
+updated: 2026-10-05
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -39,17 +39,17 @@ A person who trains at home starts every session with an unstructured decision �
 
 ## At a glance
 
-| ID   | Change ID                 | Outcome (user can …)                                                                                 | Prerequisites    | PRD refs                                     | Status      |
-| ---- | ------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- | ----------- |
-| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else                                | —                | FR-002, §Access Control                      | done        |
-| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | in-progress |
-| F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready       |
-| S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | done        |
-| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked     |
-| S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened                                    | S-02             | US-02, FR-008, FR-011                        | proposed    |
-| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | blocked     |
-| S-05 | `custom-workout-log`      | add their own workout from outside the catalogue and have it count                                   | S-04             | US-02, FR-009, FR-010                        | proposed    |
-| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train                                         | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | blocked     |
+| ID   | Change ID                 | Outcome (user can …)                                                                                 | Prerequisites    | PRD refs                                     | Status   |
+| ---- | ------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------- | -------------------------------------------- | -------- |
+| F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else                                | —                | FR-002, §Access Control                      | done     |
+| F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | done     |
+| F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready    |
+| S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | done     |
+| S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked  |
+| S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened                                    | S-02             | US-02, FR-008, FR-011                        | proposed |
+| S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | blocked  |
+| S-05 | `custom-workout-log`      | add their own workout from outside the catalogue and have it count                                   | S-04             | US-02, FR-009, FR-010                        | proposed |
+| S-06 | `unplanned-day-paths`     | get one highlighted path on a day they did not plan to train                                         | S-04, F-02       | US-03, FR-013, FR-014, FR-015, §NFRs         | blocked  |
 
 ## Streams
 
@@ -101,7 +101,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** This is research, not code, and it is the single highest-fan-out item in the milestone — it is the only reason three slices are blocked. Because the main risk is `time`, it should be started in parallel with `F-01` on day one rather than picked up when `S-02` stalls against it. The scope cap that keeps it honest: it specifies one week shape for one goal (PRD non-goal: no other goals in v1, and FR-012's three- and four-day weeks are parked), so it cannot expand into general programming methodology.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-03: A curated, tagged catalogue exists
 
@@ -241,3 +241,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 - **F-01: (foundation) the migration workflow is wired and the first per-person table ships with row-level access policies, so one signed-in person's rows are unreachable by another.** — Archived 2026-09-27 → `context/archive/2026-09-27-per-person-data-safety/`. Lesson: —.
 - **S-01: user can sign in, state their goal, cardio and strength experience, which five days of the week they train and which trainers they prefer from a provisional list, and find those answers still there on their next visit.** — Archived 2026-10-04 → `context/archive/2026-09-28-training-survey/`. Lesson: —.
+- **F-02: (foundation) the five-day weight-loss template and the counterbalancing map exist as an explicit, checkable specification.** — Archived 2026-10-05 → `context/archive/2026-10-04-coaching-week-spec/`. Lesson: —.
