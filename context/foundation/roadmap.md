@@ -3,7 +3,7 @@ project: HomeFit
 version: 1
 status: draft
 created: 2026-09-27
-updated: 2026-09-30
+updated: 2026-10-04
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -44,7 +44,7 @@ A person who trains at home starts every session with an unstructured decision �
 | F-01 | `per-person-data-safety`  | (foundation) per-person rows exist and are unreachable by anyone else                                | —                | FR-002, §Access Control                      | done        |
 | F-02 | `coaching-week-spec`      | (foundation) the five-day template and counterbalancing map are written                              | —                | §Business Logic, §Open Questions 1, 2        | ready       |
 | F-03 | `curated-video-catalogue` | (foundation) ~20 videos are curated and tagged by type/intensity/trainer                             | —                | FR-004, FR-006, §Business Logic, §Non-Goals  | ready       |
-| S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | in-progress |
+| S-01 | `training-survey`         | state their goal, cardio/strength experience, five training days and provisional trainer preferences | F-01             | US-01, FR-001, FR-002, FR-003, FR-004        | done        |
 | S-02 | `todays-pick`             | open the app on a training day and get today's pick, ready to start                                  | S-01, F-02, F-03 | US-01, FR-002, FR-005, FR-006, FR-007, §NFRs | blocked     |
 | S-03 | `session-confirmation`    | confirm on their next visit whether the previous session happened                                    | S-02             | US-02, FR-008, FR-011                        | proposed    |
 | S-04 | `week-reshaping`          | see the remaining days change after a session is recorded                                            | S-03, F-02       | US-02, FR-002, FR-010                        | blocked     |
@@ -129,7 +129,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sequenced first among user-facing work because every later slice reads its output — goal, per-type experience, training days and trainer preference are rule inputs. Sign-in itself is already working in the baseline, so the exposure here is the survey shape, not authentication. Trainer identifiers are hardcoded in `src/types.ts` until F-03 lands; F-03 owns replacing the provisional list and reconciling stored values. The known tension the PRD already accepted: a survey sits in front of first value, which is friction exactly where the product promises "start right now" — keeping it short is the mitigation, not removing it.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-02: A person is told what to train today
 
@@ -240,3 +240,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 - **F-01: (foundation) the migration workflow is wired and the first per-person table ships with row-level access policies, so one signed-in person's rows are unreachable by another.** — Archived 2026-09-27 → `context/archive/2026-09-27-per-person-data-safety/`. Lesson: —.
+- **S-01: user can sign in, state their goal, cardio and strength experience, which five days of the week they train and which trainers they prefer from a provisional list, and find those answers still there on their next visit.** — Archived 2026-10-04 → `context/archive/2026-09-28-training-survey/`. Lesson: —.
